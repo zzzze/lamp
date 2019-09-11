@@ -11,6 +11,10 @@ export default function createBlogProject(blogPath: string, commands?: Array<str
     file: path.resolve(__dirname, '../blog-template.tar.gz'),
     C: blogPath,
   })
+  shell.exec('cd ' + blogPath)
+  if (process.env.CI) {
+    shell.exec('npm install')
+  }
   if (Array.isArray(commands)) {
     commands.forEach(command => shell.exec(command))
   }
