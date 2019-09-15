@@ -1,0 +1,35 @@
+.editormd {
+  width: unset !important;
+  height: unset !important;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin-bottom: 0;
+  border: none;
+
+  > .CodeMirror {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: unset !important;
+  }
+
+  .CodeMirror-scroll {
+    height: 110%;
+  }
+}
+
+.editormd-preview {
+  right: 1px;
+}
+
+.custom-btn-container {
+  display: inline-block;
+  margin-left: 3px;
+}
+
+.fa {
+  font-family: FontAwesome, sans-serif;
+}
