@@ -2,7 +2,7 @@ import * as Hexo from 'hexo'
 import {IHexoInitOptions} from './types'
 
 let hexo = null
-export async function hexoInit(path: string, options: IHexoInitOptions, watch = false): Promise<Hexo> {
+export default async function hexoInit(path: string, options: IHexoInitOptions, watch = false): Promise<Hexo> {
   if (!hexo || options.reload) {
     hexo = new Hexo(path, options)
   }

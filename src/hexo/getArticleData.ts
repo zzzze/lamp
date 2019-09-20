@@ -1,7 +1,7 @@
 import * as Hexo from 'hexo'
 import {IArticle, IArticleData} from './types'
 
-export function getArticleData (hexo: Hexo): IArticleData {
+export default function getArticleData (hexo: Hexo): IArticleData {
   const articles: IArticle[] = (hexo.locals.get('posts') as any).data
   const result: IArticleData = {
     data: {},

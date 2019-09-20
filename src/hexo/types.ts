@@ -18,3 +18,8 @@ export interface IArticleData {
     [key: string]: object,
   }
 }
+
+export enum ActionResult {
+  SUCCESS = 'success',
+  FAILURE = 'failure',
+}
