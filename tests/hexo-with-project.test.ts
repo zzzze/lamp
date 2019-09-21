@@ -145,7 +145,7 @@ test('#createNewPost - should be invoked successfully', async t => {
     cache: false,
   })
   const result = createArticle(hexo, 'post-test')
-  t.is(result, 'success')
+  t.is(result, undefined)
   hexo = await hexoInit(t.context.blogPath, {
     debug: false,
     draft: true,
@@ -158,6 +158,18 @@ test('#createNewPost - should be invoked successfully', async t => {
       slug: 'post-test',
     },
   ]})
+})
+
+test('#createNewPost - should fail', async t => {
+  let hexo = await hexoInit(t.context.blogPath, {
+    debug: false,
+    draft: true,
+    silent: true,
+    cache: false,
+  })
+  createPost(t.context.blogPath, 'post-02', 'draft')
+  const result = createArticle(hexo, 'post-02')
+  t.is(result.message, '40001: 文件已存在')
 })
 
 test('#updateActicle #post - should be invoked successfully', async t => {

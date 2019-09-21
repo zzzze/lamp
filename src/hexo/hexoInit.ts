@@ -9,6 +9,7 @@ export default async function hexoInit(path: string, options: IHexoInitOptions, 
   if (!_hexo || !shouldCache) {
     shouldInit = true
     _hexo = new Hexo(path, options)
+    _hexo._path = path
   }
   if (shouldCache) {
     hexo = _hexo
