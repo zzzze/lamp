@@ -6,6 +6,7 @@ export interface IArticle {
 
 export interface IHexoInitOptions {
   reload?: boolean
+  cache?: boolean
   debug?: boolean
   draft?: boolean
   silent?: boolean
