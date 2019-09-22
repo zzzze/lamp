@@ -1,11 +1,13 @@
 import * as fsEx from 'fs-extra'
 import * as path from 'path'
 import {path as pathUtils, LError} from '../utils'
+import withWatcher from './withWatcher'
 
-export default function createArticle (hexo, slug: string, title?: string) {
-  let projectPath = hexo._path
+function createArticle (hexo, options: {slug?: string, title?: string}) {
+  let projectPath = hexo.env.blogPath
+  let slug = options.slug || encodeURI(options.title).replace(/\W/g, '').toLowerCase()
   let filepath = pathUtils.makePath(path.join(projectPath, `source/_drafts/${slug}.md`))
-  console.log(filepath)
+
   if (fsEx.existsSync(filepath)) {
     return new LError(40001)
   }
@@ -13,6 +15,7 @@ export default function createArticle (hexo, slug: string, title?: string) {
   hexo.post.create({
     layout: 'draft',
     slug,
-    title: title || slug,
+    title: options.title || slug,
   }, false)
 }
+export default withWatcher(createArticle)

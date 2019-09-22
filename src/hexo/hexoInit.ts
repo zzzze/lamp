@@ -9,7 +9,8 @@ export default async function hexoInit(path: string, options: IHexoInitOptions, 
   if (!_hexo || !shouldCache) {
     shouldInit = true
     _hexo = new Hexo(path, options)
-    _hexo._path = path
+    _hexo.env.blogPath = path
+    _hexo.env.watch = watch
   }
   if (shouldCache) {
     hexo = _hexo

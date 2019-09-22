@@ -15,6 +15,7 @@ interface ITag {
 }
 
 export interface IHexoInitOptions {
+  blogPath?: string
   reload?: boolean
   cache?: boolean
   debug?: boolean

@@ -3,8 +3,9 @@ import * as Hexo from 'hexo'
 import {IArticle} from './types'
 import renameFile from './renameFile'
 import {path} from '../utils'
+import withWatcher from './withWatcher'
 
-export default function updateArticle(hexo: Hexo, newData: IArticle, oldData?: IArticle) {
+function updateArticle(hexo: Hexo, newData: IArticle, oldData?: IArticle) {
   let slug = newData.slug
   if (oldData && newData.full_source !== oldData.full_source) {
     const fullSource = renameFile(newData.full_source)
@@ -23,3 +24,5 @@ export default function updateArticle(hexo: Hexo, newData: IArticle, oldData?: I
   }
   return hexo.post.create(article, true)
 }
+
+export default withWatcher(updateArticle)
