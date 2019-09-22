@@ -30,8 +30,3 @@ export interface IArticleData {
     [key: string]: IArticle,
   }
 }
-
-export enum ActionResult {
-  SUCCESS = 'success',
-  FAILURE = 'failure',
-}

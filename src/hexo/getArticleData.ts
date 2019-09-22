@@ -11,10 +11,10 @@ export default function getArticleData (hexo: Hexo): IArticleData {
   articles.forEach((item: IArticle) => {
     let article = {...item}
     if (article.tags && article.tags.length) {
-      article.tags = (article.tags as any).data.map(tag => tag.slug)
+      article.tags = (article.tags as any).data.map((tag: any) => tag.slug)
     }
     if (article.categories && article.categories.length) {
-      article.categories = (article.categories as any).data.map(cate => cate.slug)
+      article.categories = (article.categories as any).data.map((cate: any) => cate.slug)
     }
     result.data[article._id] = article
     if (/^_posts/.test(article.source)) {
