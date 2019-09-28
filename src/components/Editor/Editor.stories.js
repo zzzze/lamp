@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { linkTo } from '@storybook/addon-links'
 import { withKnobs, text } from '@storybook/addon-knobs'
-import Editor from './index.js'
+import Editor from './Editor.js'
 
 let stories = storiesOf('Editor', module)
 stories.addDecorator(withKnobs)
