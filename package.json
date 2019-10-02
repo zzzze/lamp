@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ava",
+    "test": "rm -rf tests/tmp/ || : && ava --verbose",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

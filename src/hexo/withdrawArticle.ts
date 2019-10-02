@@ -1,12 +1,11 @@
-import * as fsEx from 'fs-extra'
-import withWatcher from './withWatcher'
 import {path as pathUtil} from '../utils'
+import moveArticle from './moveArticle'
 
-function withdrawArticle (fullSource: string) {
-  if (pathUtil.isPostPathPath(fullSource)) return
+function withdrawArticle (_, fullSource: string) {
+  if (pathUtil.isDraftPath(fullSource)) return
   let slash = pathUtil.urlSlash()
   let dist = fullSource.replace(`${slash}_posts${slash}`, `${slash}_drafts${slash}`)
-  fsEx.moveSync(fullSource, dist)
+  return moveArticle(_, dist, fullSource)
 }
 
-export default withWatcher(publishArticle)
+export default withdrawArticle

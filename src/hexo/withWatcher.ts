@@ -6,11 +6,9 @@ export default function withWatcher(fn: any) {
     let result = null
     let watcher = new Promise(resolve => hexo.once('generateAfter', () => resolve(result)))
     result = fn(hexo, ...args)
-    if ((hexo as any).env.watch) {
-      if (result instanceof LError) return Promise.reject(result)
-      return watcher
-    } else {
-      return result
+    if (result instanceof LError) {
+      return Promise.reject(result)
     }
+    return watcher
   }
 }
