@@ -8,7 +8,7 @@ export default function createBlogProject(blogPath: string, commands?: Array<str
   fsEx.emptyDirSync(blogPath)
   tar.x({
     sync: true,
-    file: path.resolve(__dirname, '../../blog-template.tar.gz'),
+    file: path.resolve(__dirname, '../blog-template.tar.gz'),
     C: blogPath,
   })
   shell.cd(blogPath)

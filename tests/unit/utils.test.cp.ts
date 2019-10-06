@@ -3,7 +3,7 @@ import {stub, SinonStub} from 'sinon'
 import {
   urlSlash,
   makePath,
-} from '../src/utils/path'
+} from '../../src/utils/path'
 
 interface IContext {
   platformStub: SinonStub

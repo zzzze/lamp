@@ -11,9 +11,9 @@ import {
   moveArticle,
   publishArticle,
   withdrawArticle,
-} from '../src/hexo'
-import withWatcher from '../src/hexo/withWatcher'
-import {IArticleData} from '../src/hexo/types'
+} from '../../src/hexo'
+import withWatcher from '../../src/hexo/withWatcher'
+import {IArticleData} from '../../src/hexo/types'
 import * as chaiSubset from 'chai-subset'
 import * as chai from 'chai'
 import {createBlogProject, createPost} from './utils'
@@ -47,52 +47,29 @@ test.beforeEach(t => {
   createBlogProject(t.context.blogPath)
 })
 
-test.afterEach.always(t => {
+test.afterEach.always(async t => {
+  await new Promise(resolve => setTimeout(resolve, 500))
   fsEx.removeSync(t.context.blogPath)
 })
 
 test('#hexoInit - should be invoked successfully', async t => {
-  let hexo = await hexoInit(t.context.blogPath, {
-    cache: false,
-    reload: true,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
   expect(hexo.config).to.containSubset({title: 'Hexo'})
 })
 
-test('#hexoInit - should cache "hexo"', async t => {
-  let hexo_1 = await hexoInit(t.context.blogPath, {
-    reload: true,
-  })
-  let hexo_2 = await hexoInit(t.context.blogPath, {
-    cache: false,
-  })
-  t.deepEqual(hexo_1, hexo_2)
-})
-
 test('#hexoInit - should not cache "hexo"', async t => {
-  let hexo_1 = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
-  let hexo_2 = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo_1 = await hexoInit(t.context.blogPath)
+  let hexo_2 = await hexoInit(t.context.blogPath)
   t.notDeepEqual(hexo_1, hexo_2)
 })
 
 test('#getArticleData - should be invoked successfully', async t => {
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
   assertArticalData(t, hexo)
 })
 
-test('#withWatcher(async)', async t => {
-  class HexoMock extends EventEmitter {
-    env = {watch: true}
-  }
+test('#withWatcher', async t => {
+  class HexoMock extends EventEmitter {}
   let hexoMock = new HexoMock()
   let data = {foo: 'foo'}
   let fn = sinon.stub().returns(data)
@@ -104,14 +81,11 @@ test('#withWatcher(async)', async t => {
   t.deepEqual(data, result)
 })
 
-test('#hexoInit with watch', async t => {
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+test('#hexoInit', async t => {
+  let hexo = await hexoInit(t.context.blogPath)
   assertArticalData(t, hexo)
   await new Promise(resolve => {
-    hexo.on('generateAfter', () => {
+    hexo.once('generateAfter', () => {
       assertArticalData(t, hexo, {postLength: 2, partialArticalData: [
         {
           title: 'Post 01',
@@ -126,10 +100,7 @@ test('#hexoInit with watch', async t => {
 })
 
 test('#createNewPost #watch - should be invoked successfully', async t => {
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
   await createArticle(hexo, {slug: 'post-test'})
   assertArticalData(t, hexo, {draftLength: 1, partialArticalData: [
     {
@@ -140,10 +111,7 @@ test('#createNewPost #watch - should be invoked successfully', async t => {
 })
 
 test('#createNewPost #slug - should be invoked successfully', async t => {
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
   await createArticle(hexo, {slug: 'post-test'})
   assertArticalData(t, hexo, {draftLength: 1, partialArticalData: [
     {
@@ -154,10 +122,7 @@ test('#createNewPost #slug - should be invoked successfully', async t => {
 })
 
 test('#createNewPost #title - should be invoked successfully', async t => {
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
   await createArticle(hexo, {title: '你好'})
   assertArticalData(t, hexo, {draftLength: 1, partialArticalData: [
     {
@@ -168,10 +133,7 @@ test('#createNewPost #title - should be invoked successfully', async t => {
 })
 
 test('#createNewPost #undefined - should be invoked successfully', async t => {
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
   await createArticle(hexo, {})
   assertArticalData(t, hexo, {draftLength: 1, partialArticalData: [
     {
@@ -182,10 +144,7 @@ test('#createNewPost #undefined - should be invoked successfully', async t => {
 })
 
 test('#createNewPost - should fail', async t => {
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
   createPost(t.context.blogPath, 'post-02', 'draft')
   const result = await createArticle(hexo, {slug: 'post-02'})
   t.is((result as any).message, '40001: 文件已存在')
@@ -193,10 +152,7 @@ test('#createNewPost - should fail', async t => {
 
 test('#updateActicle #post - should be invoked successfully', async t => {
   createPost(t.context.blogPath, 'post-02')
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
 
   // modify article
   let articleData = getArticleData(hexo)
@@ -222,10 +178,7 @@ test('#updateActicle #post - should be invoked successfully', async t => {
 
 test('#updateActicle #draft - should be invoked successfully', async t => {
   createPost(t.context.blogPath, 'post-02', 'draft')
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
 
   // modify article
   let articleData = getArticleData(hexo)
@@ -253,21 +206,12 @@ test('#updateActicle #draft - should be invoked successfully', async t => {
 test('#moveArticle #post_to_draft - should be invoked successfully', async t => {
   createPost(t.context.blogPath, 'post-01')
   createPost(t.context.blogPath, 'post-02', 'draft')
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
 
-  let articleData = getArticleData(hexo)
-  let article = articleData.posts.reduce((result: any, id) => {
-    if (articleData.data[id].slug === 'post-01') {
-      result = articleData.data[id]
-    }
-    return result
-  }, null)
+  const fullSource = `${t.context.blogPath}/source/_posts/post-01.md`
 
   // move
-  await moveArticle(hexo, article.full_source.replace('_posts/post-01', '_drafts/post-02'), article.full_source)
+  await moveArticle(hexo, fullSource.replace('_posts/post-01', '_drafts/post-02'), fullSource)
 
   assertArticalData(t, hexo, {draftLength: 2, partialArticalData: [
     {
@@ -285,49 +229,26 @@ test('#moveArticle #post_to_draft - should be invoked successfully', async t => 
 
 test('#publishArticle - should be invoked successfully', async t => {
   createPost(t.context.blogPath, 'post-02', 'draft')
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
 
-  let articleData = getArticleData(hexo)
-  let article = articleData.drafts.reduce((result: any, id) => {
-    if (articleData.data[id].slug === 'post-02') {
-      result = articleData.data[id]
-    }
-    return result
-  }, null)
-
-  await publishArticle(hexo, article.full_source)
+  const fullSource = `${t.context.blogPath}/source/_drafts/post-02.md`
+  await publishArticle(hexo, fullSource)
 
   assertArticalData(t, hexo, {postLength: 2})
 })
 
 test('#withdrawArticle - should be invoked successfully', async t => {
   createPost(t.context.blogPath, 'post-02')
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
 
-  let articleData = getArticleData(hexo)
-  let article = articleData.posts.reduce((result: any, id) => {
-    if (articleData.data[id].slug === 'post-02') {
-      result = articleData.data[id]
-    }
-    return result
-  }, null)
-
-  await withdrawArticle(hexo, article.full_source)
+  const fullSource = `${t.context.blogPath}/source/_posts/post-02.md`
+  await withdrawArticle(hexo, fullSource)
 
   assertArticalData(t, hexo, {draftLength: 1})
 })
 
 test('#withGetArticleData - should be invoked successfully', async t => {
-  let hexo = await hexoInit(t.context.blogPath, {
-    reload: true,
-    cache: false,
-  })
+  let hexo = await hexoInit(t.context.blogPath)
   let createArticleEx = withGetArticleData(createArticle)
   const articleData = await createArticleEx(hexo, {title: '你好'})
   t.is(articleData.posts.length, 1)

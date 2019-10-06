@@ -1,4 +1,6 @@
 import anyTest, {TestInterface} from 'ava'
+import {stub} from 'sinon'
+import * as proxyquire from 'proxyquire'
 import {
   urlSlash,
   makePath,
@@ -6,13 +8,13 @@ import {
   isSpecialArticle,
   isDraftPath,
   isPostPath,
-} from '../src/utils/path'
+} from '../../src/utils/path'
 import {testInChildProcess} from './utils'
 
 const test = anyTest as TestInterface<null>
 
 test('test in child process', async t => {
-  testInChildProcess(t, 'tests/utils.test.cp.ts')
+  testInChildProcess(t, 'tests/unit/utils.test.cp.ts')
 })
 
 test('#urlSlash - should be invoked successfully', async t => {
@@ -60,4 +62,29 @@ test('#isDraftPath', t => {
   t.false(isDraftPath(pathname))
   pathname = '/abc/def/ghi/source/_drafts/test.md'
   t.true(isDraftPath(pathname))
+})
+
+test('#renameFile - should rename', async t => {
+  let fsExtra = {
+    pathExistsSync: stub()
+      .onCall(0).returns(true)
+      .onCall(1).returns(true)
+      .onCall(2).returns(false)
+  }
+  let renameFile = proxyquire.noCallThru().load('../../src/utils/renameFile', {
+    'fs-extra': fsExtra,
+  }).default
+  let newName = renameFile('/source/_drafts/post-01.md')
+  t.is(newName, '/source/_drafts/post-3.md')
+})
+
+test('#renameFile - should not rename', async t => {
+  let fsExtra = {
+    pathExistsSync: stub().returns(false)
+  }
+  let renameFile = proxyquire.noCallThru().load('../../src/utils/renameFile', {
+    'fs-extra': fsExtra,
+  }).default
+  let newName = renameFile('/source/_drafts/post-01.md')
+  t.is(newName, '/source/_drafts/post-01.md')
 })

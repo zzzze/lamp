@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "rm -rf tests/tmp/ || : && ava --verbose",
+    "test-integration": "rm -rf tests/integration/tmp/ || : && ava tests/integration/**.test.ts --verbose",
+    "test-unit": "ava tests/unit/**.test.ts --verbose",
+    "test": "npm run test-unit && npm run test-integration",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
