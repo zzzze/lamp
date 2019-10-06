@@ -13,6 +13,7 @@ export default function createBlogProject(blogPath: string, commands?: Array<str
   })
   shell.cd(blogPath)
   if (process.env.CI) {
+    shell.exec('rm ./package-lock.json')
     shell.exec('npm install')
   }
   if (Array.isArray(commands)) {
