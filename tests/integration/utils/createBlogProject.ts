@@ -11,8 +11,9 @@ export default function createBlogProject(blogPath: string, commands?: Array<str
     file: path.resolve(__dirname, '../blog-template.tar.gz'),
     C: blogPath,
   })
-  shell.exec('cd ' + blogPath)
+  shell.cd(blogPath)
   if (process.env.CI) {
+    shell.exec('rm ./package-lock.json')
     shell.exec('npm install')
   }
   if (Array.isArray(commands)) {

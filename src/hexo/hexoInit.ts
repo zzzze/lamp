@@ -1,16 +1,19 @@
 import * as Hexo from 'hexo'
 import {IHexoInitOptions} from './types'
 
-let hexo = null
-export async function hexoInit(path: string, options: IHexoInitOptions, watch = false): Promise<Hexo> {
-  if (!hexo || options.reload) {
-    hexo = new Hexo(path, options)
+let defaultOptions = {
+  debug: false,
+  draft: true,
+  silent: true,
+}
+export default async function hexoInit(path: string, options?: IHexoInitOptions): Promise<Hexo> {
+  options = {
+    ...defaultOptions,
+    ...options || {},
   }
+  let hexo = new Hexo(path, options)
+  ;(hexo.env as any).blogPath = path
   await hexo.init()
-  if (watch) {
-    await hexo.watch()
-  } else {
-    await hexo.load()
-  }
+  await hexo.watch()
   return hexo
 }

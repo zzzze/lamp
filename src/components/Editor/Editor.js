@@ -11,7 +11,7 @@ import 'editor.md/lib/prettify.min.js'
 import 'jquery'
 import 'editor.md/scss/editormd.scss'
 import editormd from 'editor.md/editormd.js'
-import './index.scss'
+import './Editor.scss'
 
 let defaultBtnFilter = (item, index, btns) => (
   // hide '|' and 'help' and 'info'

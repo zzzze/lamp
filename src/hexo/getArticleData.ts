@@ -1,7 +1,7 @@
 import * as Hexo from 'hexo'
 import {IArticle, IArticleData} from './types'
 
-export function getArticleData (hexo: Hexo): IArticleData {
+export default function getArticleData (hexo: Hexo): IArticleData {
   const articles: IArticle[] = (hexo.locals.get('posts') as any).data
   const result: IArticleData = {
     data: {},
@@ -9,11 +9,18 @@ export function getArticleData (hexo: Hexo): IArticleData {
     posts: [],
   }
   articles.forEach((item: IArticle) => {
-    result.data[item._id] = item
-    if (/^_posts/.test(item.source)) {
-      result.posts.push(item._id)
+    let article = {...item}
+    if (article.tags && article.tags.length) {
+      article.tags = (article.tags as any).data.map((tag: any) => tag.slug)
+    }
+    if (article.categories && article.categories.length) {
+      article.categories = (article.categories as any).data.map((cate: any) => cate.slug)
+    }
+    result.data[article._id] = article
+    if (/^_posts/.test(article.source)) {
+      result.posts.push(article._id)
     } else {
-      result.drafts.push(item._id)
+      result.drafts.push(article._id)
     }
   })
   return result
