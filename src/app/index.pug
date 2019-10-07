@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    base(href='index.html')
+    script.
+      console.timeStamp('index')
+      window.nodeRequire = require
+    script(src='./preload.js')
+    script(src='./bundle.js', defer)
+    style#custom-css
+    style.
+      body { transition: 0.5s background; }
+  body
+    app-root
+      .preload-logo
+        div
+          .lamp-logo
+          h1.lamp-title Lamp
+          .progress
+            .bar(style='width: 0%')

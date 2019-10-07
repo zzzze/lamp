@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "watch": "cross-env TERMINUS_DEV=1 webpack --progress --color --watch",
+    "start": "cross-env TERMINUS_DEV=1 electron src/app --debug",
+    "prod": "cross-env TERMINUS_DEV=1 electron src/app",
     "test-integration": "rm -rf tests/integration/tmp/ || : && ava tests/integration/**.test.ts --verbose",
     "test-unit": "ava tests/unit/**.test.ts --verbose",
     "test": "npm run test-unit && npm run test-integration",
@@ -29,7 +32,8 @@
     "@types/hexo": "^3.8.2",
     "editor.md": "^1.5.0",
     "hexo": "^3.9.0",
-    "jquery": "^3.4.1"
+    "jquery": "^3.4.1",
+    "raven-js": "^3.27.2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
@@ -48,11 +52,14 @@
     "@types/sinon": "^7.0.13",
     "@types/tar": "^4.0.3",
     "ava": "^2.3.0",
+    "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "chai-subset": "^1.6.0",
     "copy-webpack-plugin": "^5.0.4",
+    "cross-env": "^6.0.3",
     "css-loader": "^3.2.0",
+    "electron": "^6.0.11",
     "exports-loader": "^0.7.0",
     "file-loader": "^4.2.0",
     "fs-extra": "^8.1.0",
@@ -60,6 +67,7 @@
     "node-sass": "^4.12.0",
     "npm": "^6.11.3",
     "proxyquire": "^2.1.3",
+    "pug-html-loader": "^1.1.5",
     "sass-loader": "^8.0.0",
     "script-loader": "^0.7.2",
     "shelljs": "^0.8.3",
