@@ -1,6 +1,6 @@
 module.exports = [
-  require('./src/app/webpack.config.js'),
-  require('./src/app/webpack.main.config.js'),
-  require('./src/lamp-core/webpack.config.js'),
-  require('./src/lamp-settings/webpack.config.js'),
+  require('./app/webpack.config.js'),
+  require('./app/webpack.main.config.js'),
+  require('./lamp-core/webpack.config.js'),
+  require('./lamp-settings/webpack.config.js'),
 ]

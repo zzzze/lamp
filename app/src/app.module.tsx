@@ -14,7 +14,7 @@ export function getRootModule (plugins: any[]) {
   let rootModule = {
     bootstrap: () => {
       return (
-        <>{bootstraps.map(bootstrap => bootstrap())}</>
+        <>{bootstraps.map((bootstrap: any) => bootstrap())}</>
       )
     },
     modules: [...plugins],
