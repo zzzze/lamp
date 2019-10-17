@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { BootstrapContext } from '../../shared/AppTypes'
 
 export function getRootModule (plugins: any[]) {
   const bootstraps = plugins.reduce((result, x) => {
@@ -12,10 +12,8 @@ export function getRootModule (plugins: any[]) {
     throw new Error('Did not find any bootstrap components. Are there any plugins installed?')
   }
   let rootModule = {
-    bootstrap: () => {
-      return (
-        <>{bootstraps.map((bootstrap: any) => bootstrap())}</>
-      )
+    bootstrap: (context: BootstrapContext) => {
+      return bootstraps.map((bootstrap: any) => bootstrap(context))
     },
     modules: [...plugins],
   }

@@ -1,12 +1,7 @@
-import * as  ReactDOM from 'react-dom'
-import * as React from 'react'
 import 'rxjs'
-
 import * as isDev from 'electron-is-dev'
-
 import './global.scss'
 import './toastr.scss'
-
 import { getRootModule } from './app.module'
 import { findPlugins, loadPlugins, PluginInfo } from './plugins'
 
@@ -34,7 +29,7 @@ async function bootstrap (plugins: PluginInfo[], safeMode = false): Promise<any>
   })
   const rootModule = getRootModule(pluginsModules) as any
   window['rootModule'] = rootModule
-  return ReactDOM.render(<rootModule.bootstrap />, document.getElementsByTagName('app-root')[0])
+  return rootModule.bootstrap({rootNode: document.getElementsByTagName('app-root')[0]})
 }
 
 findPlugins().then(async plugins => {
