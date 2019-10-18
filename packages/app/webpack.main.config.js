@@ -16,7 +16,7 @@ module.exports = {
     filename: '[name].js',
   },
   resolve: {
-    modules: ['lib/', 'node_modules', '../node_modules'].map(x => path.join(__dirname, x)),
+    modules: ['lib/', 'node_modules', '../../node_modules'].map(x => path.join(__dirname, x)),
     extensions: ['.ts', '.js'],
   },
   module: {

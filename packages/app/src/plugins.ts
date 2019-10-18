@@ -1,5 +1,6 @@
 import * as fs from 'mz/fs'
 import * as path from 'path'
+import { Plugin } from '../../shared/AppTypes'
 const nodeModule = require('module') // eslint-disable-line @typescript-eslint/no-var-requires
 const nodeRequire = (global as any).require
 
@@ -164,11 +165,11 @@ export async function loadPlugins (foundPlugins: PluginInfo[], progress: Progres
       const label = 'Loading ' + foundPlugin.name
       console.time(label)
       const packageModule = nodeRequire(foundPlugin.path)
-      const pluginModule = packageModule.default
-      pluginModule['pluginName'] = foundPlugin.name
-      pluginModule['providers'] = packageModule.providers
-      pluginModule['bootstrap'] = packageModule.bootstrap
-      plugins.push(pluginModule)
+      const plugin: Plugin = {
+        name: foundPlugin.name,
+        ...packageModule,
+      }
+      plugins.push(plugin)
       console.timeEnd(label)
       await new Promise(x => setTimeout(x, 50))
     } catch (error) {

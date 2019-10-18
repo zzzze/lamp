@@ -1,12 +1,12 @@
 {
-  "name": "lamp",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": "true",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "watch": "cross-env TERMINUS_DEV=1 webpack --progress --color --watch",
-    "start": "cross-env TERMINUS_DEV=1 electron app --debug",
-    "prod": "cross-env TERMINUS_DEV=1 electron app",
+    "start": "cross-env TERMINUS_DEV=1 electron packages/app --debug",
+    "prod": "cross-env TERMINUS_DEV=1 electron packages/app",
     "test-integration": "rm -rf tests/integration/tmp/ || : && ava tests/integration/**.test.ts --verbose",
     "test-unit": "ava tests/unit/**.test.ts --verbose",
     "test": "npm run test-unit && npm run test-integration",
@@ -15,8 +15,6 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
-  "author": "",
-  "license": "ISC",
   "ava": {
     "files": [
       "tests/**.test.ts"
