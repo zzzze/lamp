@@ -10,11 +10,12 @@ import {
   isPostPath,
 } from '../../src/utils/path'
 import {testInChildProcess} from './utils'
+import * as path from 'path'
 
 const test = anyTest as TestInterface<null>
 
 test('test in child process', async t => {
-  testInChildProcess(t, 'tests/unit/utils.test.cp.ts')
+  testInChildProcess(t, path.join(__dirname, 'utils.test.cp.ts'))
 })
 
 test('#urlSlash - should be invoked successfully', async t => {

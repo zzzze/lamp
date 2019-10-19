@@ -26,12 +26,13 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/,
+        exclude: /node_modules|tests/,
         use: {
           loader: 'awesome-typescript-loader',
           options: {
             configFileName: path.resolve(__dirname, 'tsconfig.json'),
             useBabel: true,
-            babelCore: "@babel/core",
+            babelCore: '@babel/core',
           },
         },
       },
