@@ -1,5 +1,5 @@
 {
-  "name": "lamp-core",
+  "name": "@lamp/core",
   "version": "1.0.0",
   "description": "",
   "keywords": [
@@ -20,6 +20,7 @@
   "dependencies": {
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
-    "redux-saga": "^1.1.1"
+    "redux-saga": "^1.1.1",
+    "@lamp/shared": "^1.0.0"
   }
 }

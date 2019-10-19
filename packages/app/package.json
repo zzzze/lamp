@@ -1,5 +1,5 @@
 {
-  "name": "lamp",
+  "name": "@lamp/app",
   "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",
@@ -16,7 +16,8 @@
     "js-yaml": "^3.13.1",
     "mz": "^2.7.0",
     "rxjs": "^6.5.3",
-    "rxjs-compat": "^6.5.3"
+    "rxjs-compat": "^6.5.3",
+    "@lamp/shared": "^1.0.0"
   },
   "optionalDependencies": {
     "windows-blurbehind": "^1.0.1",

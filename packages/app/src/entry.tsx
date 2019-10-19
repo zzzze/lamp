@@ -26,6 +26,11 @@ async function bootstrap (plugins: PluginInfo[], safeMode = false): Promise<any>
   }
   const pluginsModules = await loadPlugins(plugins, (current, total) => {
     (document.querySelector('.progress .bar') as HTMLElement).style.width = `${100 * current / total}%` // eslint-disable-line
+    if (current / total === 1) {
+      setTimeout(() => {
+        document.getElementsByTagName('loading')[0].className = 'hide'
+      }, 1500)
+    }
   })
   const rootModule = getRootModule(pluginsModules) as any
   window['rootModule'] = rootModule

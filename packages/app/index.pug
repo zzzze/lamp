@@ -10,12 +10,13 @@ html
     script(src='./bundle.js', defer)
     style#custom-css
     style.
-      body { transition: 0.5s background; }
+      loading { transition: 0.5s background; }
   body
-    app-root
+    loading
       .preload-logo
         div
           .lamp-logo
           h1.lamp-title Lamp
           .progress
             .bar(style='width: 0%')
+    app-root

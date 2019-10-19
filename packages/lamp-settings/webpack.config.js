@@ -2,7 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
-  name: 'lamp-core',
+  name: 'lamp-settings',
   target: 'node',
   entry: './src/index.tsx',
   mode: process.env.LAMP_DEV ? 'development' : 'production',
@@ -16,7 +16,7 @@ module.exports = {
     pathinfo: true,
     filename: '[name].js',
     libraryTarget: 'umd',
-    devtoolModuleFilenameTemplate: 'webpack-lamp-core:///[resource-path]',
+    devtoolModuleFilenameTemplate: 'webpack-lamp-settings:///[resource-path]',
   },
   resolve: {
     modules: ['src/', 'node_modules', '../../node_modules', 'assets/'].map(x => path.join(__dirname, x)),

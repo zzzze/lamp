@@ -1,4 +1,3 @@
-export default {}
 const providers = {
   toolbarButtonProvidor: app => ({
     name: 'settings',

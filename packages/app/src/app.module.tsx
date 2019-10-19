@@ -1,4 +1,4 @@
-import { BootstrapContext } from '../../shared/AppTypes'
+import { AppTypes } from '@lamp/shared'
 
 export function getRootModule (plugins: any[]) {
   const bootstraps = plugins.reduce((result, x) => {
@@ -12,7 +12,7 @@ export function getRootModule (plugins: any[]) {
     throw new Error('Did not find any bootstrap components. Are there any plugins installed?')
   }
   let rootModule = {
-    bootstrap: (context: BootstrapContext) => {
+    bootstrap: (context: AppTypes.BootstrapContext) => {
       return bootstraps.map((bootstrap: any) => bootstrap(context))
     },
     modules: [...plugins],
