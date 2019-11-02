@@ -1,15 +1,19 @@
+import * as React from 'react'
 import { Store } from 'redux'
-import { ADD_TOOLBAR_BUTTON_GENERATOR } from '../redux/types/app.type'
+import { ADD_TOOLBAR_BUTTON_GENERATOR } from 'redux/types/app.type'
 import { constants } from '@lamp/shared'
+import { EditorProps } from '@lamp/shared/types/editor'
+import store from 'redux/store'
 
 interface TraversalContext {
   callback: (plugin: any, index: number) => any
   providerName: constants.Provider
 }
 
-export default class AppService {
-  private readonly _store: Store
-  constructor(store: Store) {
+class AppService {
+  private _store: Store
+
+  constructor(_store: Store) {
     this._store = store
   }
 
@@ -30,8 +34,8 @@ export default class AppService {
     })
   }
 
-  public getEditor() {
-    let result = null
+  public getEditor(): React.ComponentType<EditorProps> {
+    let result = () => <div>No editor found.</div>
     const callback = plugin => {
       result = plugin.providers[constants.Provider.EDITOR]
     }
@@ -51,3 +55,5 @@ export default class AppService {
     return result
   }
 }
+
+export default new AppService(store)

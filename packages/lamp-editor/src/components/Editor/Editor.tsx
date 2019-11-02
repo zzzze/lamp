@@ -10,20 +10,26 @@ import 'editor.md/lib/codemirror/modes.min.js'
 import 'editor.md/lib/marked.min.js'
 import 'editor.md/lib/prettify.min.js'
 import 'editor.md/scss/editormd.scss'
+import { EditorProps } from '@lamp/shared/types/editor'
 import './Editor.scss'
 
 if (typeof module === 'object') {
-  window.module = module; (module as any) = undefined
+  window.module = module
+  ;(module as any) = undefined
 }
 require('jquery')
 const editormd = require('editor.md/editormd.js')
-if (window.module) module = window.module
+if (window.module) (module as any) = window.module
 
-const defaultBtnFilter = (item, index, btns) =>
-// hide '|' and 'help' and 'info'
-  index !== btns.length - 1 && index !== btns.length - 2 && index !== btns.length - 3 &&
+const defaultBtnFilter = (item: string, index: number, btns: string[]) =>
+  // hide '|' and 'help' and 'info'
+  index !== btns.length - 1 &&
+  index !== btns.length - 2 &&
+  index !== btns.length - 3 &&
   // hide others
-  item !== 'fullscreen' && item !== 'pagebreak' && item !== 'emoji'
+  item !== 'fullscreen' &&
+  item !== 'pagebreak' &&
+  item !== 'emoji'
 
 editormd.toolbarModes = {
   ...editormd.toolbarModes,
@@ -32,52 +38,59 @@ editormd.toolbarModes = {
   mini: editormd.toolbarModes.mini.filter(defaultBtnFilter),
 }
 
-export default class Editor extends React.Component<any> {
-    customBtnContainer = document.createElement('ul');
-    mditor: any;
-    $menuContainer: any;
-    componentDidMount() {
-      const {value, onChange} = this.props
-      this.mditor = editormd('editor-wrapper', {
-        value,
-        path: path.join(__dirname, '../../node_modules/editor.md/lib/'),
-        pluginPath: __webpack_public_path__ + 'public/plugins/',
-        onchange: () => onChange && onChange(this.mditor ? this.mditor.getMarkdown() : ''),
-        autoLoadModules: false,
-        onload: function() {
-          console.log('onloaded =>', this, this.id, this.settings)
-        },
-      })
-      this.$menuContainer = (global as any).$('.editormd-menu')
-      this.customBtnContainer.className = 'editormd-menu custom-btn-container'
-      this.$menuContainer.append(this.customBtnContainer)
-    }
+class Editor extends React.Component<EditorProps> {
+  customBtnContainer = document.createElement('ul')
+  mditor: any
+  $menuContainer: any
+  componentDidMount() {
+    const { value, onChange } = this.props
+    this.mditor = editormd('editor-wrapper', {
+      value,
+      path: path.join(__dirname, '../../node_modules/editor.md/lib/'),
+      pluginPath: __webpack_public_path__ + 'public/plugins/', // eslint-disable-line
+      onchange: () =>
+        onChange && onChange(this.mditor ? this.mditor.getMarkdown() : ''),
+      autoLoadModules: false,
+      onload: function() {
+        console.log('onloaded =>', this, this.id, this.settings)
+      },
+    })
+    this.$menuContainer = (global as any).$('.editormd-menu')
+    this.customBtnContainer.className = 'editormd-menu custom-btn-container'
+    this.$menuContainer.append(this.customBtnContainer)
+  }
 
-    componentDidUpdate(prevProps) {
-      if (prevProps.value !== this.props.value) {
-        this.mditor.setMarkdown(this.props.value)
-      }
+  componentDidUpdate(prevProps: EditorProps) {
+    if (prevProps.value !== this.props.value) {
+      this.mditor.setMarkdown(this.props.value)
     }
+  }
 
-    handleSave = () => {
-      const {onSave} = this.props
-      onSave && onSave(this.mditor.getMarkdown())
-    };
+  handleSave = () => {
+    const { onSave } = this.props
+    onSave && onSave(this.mditor.getMarkdown())
+  }
 
-    render() {
-      return (
-        <>
-          {ReactDOM.createPortal(
-            <>
-              <li className='divider' unselectable='on'>|</li>
-              <li>
-                <a onClick={this.handleSave}><i className='fa fa-save' {...{name: 'save'}} /></a>
-              </li>
-            </>,
-            this.customBtnContainer,
-          )}
-          <div id='editor-wrapper' />
-        </>
-      )
-    }
+  render() {
+    return (
+      <>
+        {ReactDOM.createPortal(
+          <>
+            <li className="divider" unselectable="on">
+              |
+            </li>
+            <li>
+              <a onClick={this.handleSave}>
+                <i className="fa fa-save" {...{ name: 'save' }} />
+              </a>
+            </li>
+          </>,
+          this.customBtnContainer
+        )}
+        <div id="editor-wrapper" />
+      </>
+    )
+  }
 }
+
+export default Editor

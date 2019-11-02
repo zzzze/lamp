@@ -5,10 +5,7 @@ import { useSelector } from 'react-redux'
 import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
-import AppService from '../../services/app'
-import store from '../../redux/store'
-
-const appService = new AppService(store)
+import appService from 'services/app.service'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
