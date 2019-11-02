@@ -1,19 +1,19 @@
-import React form 'react'
+import React from 'react'
 
-export default funciton Text() {
-  return (
-    <div>
-      <div>test</div>
-        </div>
-  )
-}
-
-class Text_b extends React.Component {
+export class test extends React.Component {
   render() {
     return (
       <div>
         <div>test</div>
-          </div>
+      </div>
     )
   }
+}
+
+export default function Text() {
+  return (
+    <div>
+      <div>test</div>
+    </div>
+  )
 }

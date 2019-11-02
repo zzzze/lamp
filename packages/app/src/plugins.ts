@@ -1,10 +1,10 @@
 import * as fs from 'mz/fs'
 import * as path from 'path'
 import { AppTypes } from '@lamp/shared'
-const nodeModule = require('module') // eslint-disable-line @typescript-eslint/no-var-requires
+import nodeModule = require('module')
 const nodeRequire = (global as any).require
 
-function normalizePath (path: string): string {
+function normalizePath(path: string): string {
   const cygwinPrefix = '/cygdrive/'
   if (path.startsWith(cygwinPrefix)) {
     path = path.substring(cygwinPrefix.length).replace('/', '\\')
@@ -13,18 +13,24 @@ function normalizePath (path: string): string {
   return path
 }
 
-global['module'].paths.map((x: string) => nodeModule.globalPaths.push(normalizePath(x)))
+;(global as any).module.paths.map((x: string) =>
+  (nodeModule as any).globalPaths.push(normalizePath(x))
+)
 
 if (process.env.TERMINUS_DEV) {
-  nodeModule.globalPaths.unshift(path.dirname(require('electron').remote.app.getAppPath()))
+  ;(nodeModule as any).globalPaths.unshift(
+    path.dirname(require('electron').remote.app.getAppPath())
+  )
 }
 
-const builtinPluginsPath = process.env.TERMINUS_DEV ? path.dirname(require('electron').remote.app.getAppPath()) : path.join((process as any).resourcesPath, 'builtin-plugins')
+const builtinPluginsPath = process.env.TERMINUS_DEV
+  ? path.dirname(require('electron').remote.app.getAppPath())
+  : path.join((process as any).resourcesPath, 'builtin-plugins')
 
 const userPluginsPath = path.join(
   require('electron').remote.app.getPath('appData'),
   'lamp',
-  'plugins',
+  'plugins'
 )
 
 if (!fs.existsSync(userPluginsPath)) {
@@ -32,14 +38,18 @@ if (!fs.existsSync(userPluginsPath)) {
 }
 
 Object.assign(window, { builtinPluginsPath, userPluginsPath })
-nodeModule.globalPaths.unshift(builtinPluginsPath)
-nodeModule.globalPaths.unshift(path.join(userPluginsPath, 'node_modules'))
+;(nodeModule as any).globalPaths.unshift(builtinPluginsPath)
+;(nodeModule as any).globalPaths.unshift(
+  path.join(userPluginsPath, 'node_modules')
+)
 // nodeModule.globalPaths.unshift(path.join((process as any).resourcesPath, 'app.asar', 'node_modules'))
 if (process.env.LAMP_PLUGINS) {
-  process.env.LAMP_PLUGINS.split(':').map(x => nodeModule.globalPaths.push(normalizePath(x)))
+  process.env.LAMP_PLUGINS.split(':').map(x =>
+    (nodeModule as any).globalPaths.push(normalizePath(x))
+  )
 }
 
-export type ProgressCallback = (current: number, total: number) => void // eslint-disable-line @typescript-eslint/no-type-alias
+export type ProgressCallback = (current: number, total: number) => void
 
 export interface PluginInfo {
   name: string
@@ -59,6 +69,8 @@ const builtinModules = [
   'rxjs',
   'rxjs/operators',
   'rxjs-compat/Subject',
+  '@material-ui/core',
+  '@material-ui/icons',
   'lamp-core',
   'lamp-settings',
 ]
@@ -72,7 +84,7 @@ builtinModules.forEach(m => {
 })
 
 const originalRequire = (global as any).require
-;(global as any).require = function (query: string) {
+;(global as any).require = function(query: string) {
   if (cachedBuiltinModules[query]) {
     return cachedBuiltinModules[query]
   }
@@ -80,22 +92,22 @@ const originalRequire = (global as any).require
 }
 
 const originalModuleRequire = nodeModule.prototype.require
-nodeModule.prototype.require = function (query: string) {
+nodeModule.prototype.require = function(query: string) {
   if (cachedBuiltinModules[query]) {
     return cachedBuiltinModules[query]
   }
   return originalModuleRequire.call(this, query)
 }
 
-export async function findPlugins (): Promise<PluginInfo[]> {
-  const paths = nodeModule.globalPaths
+export async function findPlugins(): Promise<PluginInfo[]> {
+  const paths = (nodeModule as any).globalPaths
   let foundPlugins: PluginInfo[] = []
-  const candidateLocations: { pluginDir: string, packageName: string }[] = []
+  const candidateLocations: { pluginDir: string; packageName: string }[] = []
   const PREFIX = 'lamp-'
 
   for (let pluginDir of paths) {
     pluginDir = normalizePath(pluginDir)
-    if (!await fs.exists(pluginDir)) {
+    if (!(await fs.exists(pluginDir))) {
       continue
     }
     const pluginNames = await fs.readdir(pluginDir)
@@ -115,7 +127,7 @@ export async function findPlugins (): Promise<PluginInfo[]> {
   for (const { pluginDir, packageName } of candidateLocations) {
     const pluginPath = path.join(pluginDir, packageName)
     const infoPath = path.join(pluginPath, 'package.json')
-    if (!await fs.exists(infoPath)) {
+    if (!(await fs.exists(infoPath))) {
       continue
     }
 
@@ -127,8 +139,16 @@ export async function findPlugins (): Promise<PluginInfo[]> {
     }
 
     try {
-      const info = JSON.parse(await fs.readFile(infoPath, { encoding: 'utf-8' }))
-      if (!info.keywords || !(info.keywords.includes('lamp-plugin') || info.keywords.includes('lamp-builtin-plugin'))) {
+      const info = JSON.parse(
+        await fs.readFile(infoPath, { encoding: 'utf-8' })
+      )
+      if (
+        !info.keywords ||
+        !(
+          info.keywords.includes('lamp-plugin') ||
+          info.keywords.includes('lamp-builtin-plugin')
+        )
+      ) {
         continue
       }
       let author = info.author
@@ -148,18 +168,22 @@ export async function findPlugins (): Promise<PluginInfo[]> {
     }
   }
 
-  foundPlugins.sort((a, b) => a.name > b.name ? 1 : -1)
-
+  foundPlugins.sort((a, b) => (a.name > b.name ? 1 : -1))
   ;(window as any).installedPlugins = foundPlugins
   return foundPlugins
 }
 
-export async function loadPlugins (foundPlugins: PluginInfo[], progress: ProgressCallback): Promise<any[]> {
+export async function loadPlugins(
+  foundPlugins: PluginInfo[],
+  progress: ProgressCallback
+): Promise<any[]> {
   const plugins: any[] = []
   progress(0, 1)
   let index = 0
   for (const foundPlugin of foundPlugins) {
-    console.info(`Loading ${foundPlugin.name}: ${nodeRequire.resolve(foundPlugin.path)}`)
+    console.info(
+      `Loading ${foundPlugin.name}: ${nodeRequire.resolve(foundPlugin.path)}`
+    )
     progress(index, foundPlugins.length)
     try {
       const label = 'Loading ' + foundPlugin.name
@@ -171,7 +195,7 @@ export async function loadPlugins (foundPlugins: PluginInfo[], progress: Progres
       }
       plugins.push(plugin)
       console.timeEnd(label)
-      await new Promise(x => setTimeout(x, 50))
+      await new Promise(resolve => setTimeout(resolve, 50))
     } catch (error) {
       console.error(`Could not load ${foundPlugin.name}:`, error)
     }

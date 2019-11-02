@@ -4,7 +4,7 @@ import * as Hexo from 'hexo'
 export default function withWatcher(fn: any) {
   return (hexo: Hexo, ...args: any[]) => {
     let result = null
-    let watcher = new Promise(resolve => hexo.once('generateAfter', () => resolve(result)))
+    const watcher = new Promise(resolve => hexo.once('generateAfter', () => resolve(result)))
     result = fn(hexo, ...args)
     if (result instanceof LError) {
       return Promise.reject(result)

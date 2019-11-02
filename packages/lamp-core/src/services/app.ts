@@ -8,13 +8,16 @@ interface TraversalContext {
 }
 
 export default class AppService {
-  private _store: Store
+  private readonly _store: Store
   constructor(store: Store) {
     this._store = store
   }
 
   addTab(tabConfig: any) {
-    this._store.dispatch({ type: ADD_TOOLBAR_BUTTON_GENERATOR, payload: tabConfig })
+    this._store.dispatch({
+      type: ADD_TOOLBAR_BUTTON_GENERATOR,
+      payload: tabConfig,
+    })
   }
 
   private traversePlugins(context: TraversalContext) {
@@ -29,10 +32,22 @@ export default class AppService {
 
   public getEditor() {
     let result = null
-    const callback = (plugin) => {
+    const callback = plugin => {
       result = plugin.providers[constants.Provider.EDITOR]
     }
-    this.traversePlugins({callback, providerName: constants.Provider.EDITOR})
+    this.traversePlugins({ callback, providerName: constants.Provider.EDITOR })
+    return result
+  }
+
+  public getMenuItemRenderers(): Array<(args: any) => React.ReactNode> {
+    const result: any[] = []
+    const callback = plugin => {
+      result.push(plugin.providers[constants.Provider.MENU_ITEM_RENDERER])
+    }
+    this.traversePlugins({
+      callback,
+      providerName: constants.Provider.MENU_ITEM_RENDERER,
+    })
     return result
   }
 }

@@ -7,7 +7,6 @@ import { findPlugins, loadPlugins, PluginInfo } from './plugins'
 
 // Always land on the start view
 location.hash = ''
-
 ;(process as any).enablePromiseAPI = true
 
 if (process.platform === 'win32' && !('HOME' in process.env)) {
@@ -20,12 +19,17 @@ if (isDev) {
   // enableProdMode()
 }
 
-async function bootstrap (plugins: PluginInfo[], safeMode = false): Promise<any> {
+async function bootstrap(
+  plugins: PluginInfo[],
+  safeMode = false
+): Promise<any> {
   if (safeMode) {
     plugins = plugins.filter(x => x.isBuiltin)
   }
   const pluginsModules = await loadPlugins(plugins, (current, total) => {
-    (document.querySelector('.progress .bar') as HTMLElement).style.width = `${100 * current / total}%` // eslint-disable-line
+    ;(document.querySelector(
+      '.progress .bar'
+    ) as HTMLElement).style.width = `${(100 * current) / total}%` // eslint-disable-line
     if (current / total === 1) {
       setTimeout(() => {
         document.getElementsByTagName('loading')[0].className = 'hide'
@@ -33,8 +37,10 @@ async function bootstrap (plugins: PluginInfo[], safeMode = false): Promise<any>
     }
   })
   const rootModule = getRootModule(pluginsModules) as any
-  window['rootModule'] = rootModule
-  return rootModule.bootstrap({rootNode: document.getElementsByTagName('app-root')[0]})
+  ;(window as any).rootModule = rootModule
+  return rootModule.bootstrap({
+    rootNode: document.getElementsByTagName('app-root')[0],
+  })
 }
 
 findPlugins().then(async plugins => {
@@ -44,7 +50,7 @@ findPlugins().then(async plugins => {
   } catch (error) {
     console.error('React bootstrapping error:', error)
     console.warn('Trying safe mode')
-    window['safeModeReason'] = error
+    ;(window as any).safeModeReason = error
     try {
       await bootstrap(plugins, true)
     } catch (error) {

@@ -6,7 +6,7 @@ module.exports = {
   target: 'node',
   entry: './src/index.tsx',
   mode: process.env.LAMP_DEV ? 'development' : 'production',
-  optimization:{
+  optimization: {
     minimize: false,
   },
   context: __dirname,
@@ -19,7 +19,9 @@ module.exports = {
     devtoolModuleFilenameTemplate: 'webpack-lamp-settings:///[resource-path]',
   },
   resolve: {
-    modules: ['src/', 'node_modules', '../../node_modules', 'assets/'].map(x => path.join(__dirname, x)),
+    modules: ['src/', 'node_modules', '../../node_modules', 'assets/'].map(x =>
+      path.join(__dirname, x)
+    ),
     extensions: ['.ts', '.tsx', '.js'],
   },
   module: {
@@ -31,7 +33,7 @@ module.exports = {
           options: {
             configFileName: path.resolve(__dirname, 'tsconfig.json'),
             useBabel: true,
-            babelCore: "@babel/core",
+            babelCore: '@babel/core',
           },
         },
       },
@@ -64,8 +66,7 @@ module.exports = {
     'path',
     /^rxjs/,
     /^react/,
+    /^@material-ui/,
   ],
-  plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin(),
-  ],
+  plugins: [new webpack.optimize.ModuleConcatenationPlugin()],
 }

@@ -1,4 +1,4 @@
 export enum Provider {
-  TOOLBAR_BUTTON = 'toolbar_button',
+  MENU_ITEM_RENDERER = 'menu-item-renderer',
   EDITOR = 'editor',
 }

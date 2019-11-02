@@ -14,7 +14,7 @@ export function normalizePath(pathname: string): string {
 
 export function isSpecialArticle(pathname: string, type: string): boolean {
   pathname = normalizePath(pathname)
-  let pattern = new RegExp(`/source/_${type}s/.+\\.md$`)
+  const pattern = new RegExp(`/source/_${type}s/.+\\.md$`)
   return pattern.test(pathname)
 }
 

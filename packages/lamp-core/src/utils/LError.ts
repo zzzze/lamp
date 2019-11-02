@@ -1,5 +1,5 @@
 const errorCodeMap = {
-  [40001]: '文件已存在',
+  40001: '文件已存在',
 }
 
 export default class LError extends Error {

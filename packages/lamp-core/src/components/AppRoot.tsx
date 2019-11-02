@@ -1,31 +1,62 @@
 import * as React from 'react'
-// import useAppService from '../hooks/useAppService'
-import { useSelector } from 'react-redux'
 import AppService from '../services/app'
 import store from '../redux/store'
+import Grid from '@material-ui/core/Grid'
+import Button from '@material-ui/core/Button'
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import Tabbar from './Tabbar'
 
-let appService = new AppService(store)
+const appService = new AppService(store)
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    container: {
+      padding: theme.spacing(0),
+      height: '100vh',
+    },
+    mainContainer: {
+      flex: 1,
+      width: '100%',
+    },
+    content: {
+      flex: 1,
+    },
+    sidebar: {
+      width: 200,
+    },
+  })
+)
 
-// const defaultTabs = [{name: 'test'}]
-
-export default function AppRoot() {
-  // let [tabs, appService] = useAppService(defaultTabs)
-  const tabs = useSelector((state: any) => state.app.tabs)
-  const rootModule = (window as any).rootModule
-  const buttons = rootModule.modules.reduce((result, _module) => {
-    if (_module.providers && _module.providers.toolbarButtonProvidor) {
-      let buttonInfo = _module.providers.toolbarButtonProvidor(appService)
-      result.push(<button key={buttonInfo.name} onClick={buttonInfo.click}>{buttonInfo.name}</button>)
-    }
-    return result
-  }, [])
+const AppRoot: React.FC = () => {
+  const classes = useStyles()
+  const renderEditor: any = appService.getEditor()
   return (
     <div>
-      {buttons}
-      {tabs.map(tab =>
-        <div key={tab.name}>{tab.name}</div>
-      )}
+      <Grid
+        container
+        direction="column"
+        spacing={0}
+        className={classes.container}
+      >
+        <Tabbar />
+
+        <Grid
+          item
+          container
+          justify="center"
+          spacing={0}
+          className={classes.mainContainer}
+        >
+          <Grid item className={classes.sidebar}>
+            <Button variant="contained">Default</Button>
+            <div className="editor-wrapper">编辑器</div>
+          </Grid>
+          <Grid item className={classes.content}>
+            {renderEditor()}
+          </Grid>
+        </Grid>
+      </Grid>
     </div>
   )
 }
+export default AppRoot
