@@ -1,13 +1,13 @@
-import {useState} from 'react'
+import { useState } from 'react'
 
 export interface Tab {
-  name: string;
+  name: string
 }
 
-export type AddTab = (newTab: Tab) => void;
+export type AddTab = (newTab: Tab) => void
 
 export interface AppService {
-  addTab: AddTab;
+  addTab: AddTab
 }
 
 export default function useAppService(
@@ -15,6 +15,6 @@ export default function useAppService(
 ): [Tab[], AppService] {
   const [tabs, setTabs] = useState<Tab[]>(defaultTabs)
   const addTab: AddTab = newTab => setTabs([...tabs, newTab])
-  const appService: AppService = {addTab}
+  const appService: AppService = { addTab }
   return [tabs, appService]
 }

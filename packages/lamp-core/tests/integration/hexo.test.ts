@@ -1,4 +1,4 @@
-import anyTest, {TestInterface, ExecutionContext} from 'ava'
+import anyTest, { TestInterface, ExecutionContext } from 'ava'
 import * as Hexo from 'hexo'
 import * as path from 'path'
 import * as EventEmitter from 'events'
@@ -13,15 +13,15 @@ import {
   withdrawArticle,
 } from '../../src/hexo'
 import withWatcher from '../../src/hexo/withWatcher'
-import {IArticleData} from '../../src/hexo/types'
+import { IArticleData } from '../../src/hexo/types'
 import * as chaiSubset from 'chai-subset'
 import * as chai from 'chai'
-import {createBlogProject, createPost} from './utils'
+import { createBlogProject, createPost } from './utils'
 import * as fsEx from 'fs-extra'
 import * as sinon from 'sinon'
 
 chai.use(chaiSubset)
-let {expect} = chai
+let { expect } = chai
 
 interface IContext {
   blogPath: string
@@ -30,20 +30,31 @@ interface IContext {
 
 const test = anyTest as TestInterface<IContext>
 
-function assertArticalData(t: ExecutionContext<IContext>, hexo: Hexo, {postLength = 1, draftLength = 0, partialArticalData = []} = {}) {
+function assertArticalData(
+  t: ExecutionContext<IContext>,
+  hexo: Hexo,
+  { postLength = 1, draftLength = 0, partialArticalData = [] } = {}
+) {
   let articleData = getArticleData(hexo)
   t.context.articleData = articleData
   t.is(articleData.posts.length, postLength)
   t.is(articleData.drafts.length, draftLength)
-  expect(Object.keys(articleData.data)).to.containSubset([].concat(articleData.posts, articleData.drafts))
+  expect(Object.keys(articleData.data)).to.containSubset(
+    [].concat(articleData.posts, articleData.drafts)
+  )
   expect(Object.values(articleData.data)).to.containSubset([
-    {title: 'Hello World'},
+    { title: 'Hello World' },
     ...partialArticalData,
   ])
 }
 
 test.beforeEach(t => {
-  t.context.blogPath = path.resolve(__dirname, `./tmp/blog-${Math.random().toString(36).slice(2)}`)
+  t.context.blogPath = path.resolve(
+    __dirname,
+    `./tmp/blog-${Math.random()
+      .toString(36)
+      .slice(2)}`
+  )
   createBlogProject(t.context.blogPath)
 })
 
@@ -54,7 +65,7 @@ test.afterEach.always(async t => {
 
 test('#hexoInit - should be invoked successfully', async t => {
   let hexo = await hexoInit(t.context.blogPath)
-  expect(hexo.config).to.containSubset({title: 'Hexo'})
+  expect(hexo.config).to.containSubset({ title: 'Hexo' })
 })
 
 test('#hexoInit - should not cache "hexo"', async t => {
@@ -71,7 +82,7 @@ test('#getArticleData - should be invoked successfully', async t => {
 test('#withWatcher', async t => {
   class HexoMock extends EventEmitter {}
   let hexoMock = new HexoMock()
-  let data = {foo: 'foo'}
+  let data = { foo: 'foo' }
   let fn = sinon.stub().returns(data)
   t.true(withWatcher(fn)(hexoMock as any) instanceof Promise)
   process.nextTick(() => {
@@ -86,13 +97,16 @@ test('#hexoInit', async t => {
   assertArticalData(t, hexo)
   await new Promise(resolve => {
     hexo.once('generateAfter', () => {
-      assertArticalData(t, hexo, {postLength: 2, partialArticalData: [
-        {
-          title: 'Post 01',
-          slug: 'post-01',
-          _content: '## Lamp\n\nA hexo blog editor.\n\n',
-        },
-      ]})
+      assertArticalData(t, hexo, {
+        postLength: 2,
+        partialArticalData: [
+          {
+            title: 'Post 01',
+            slug: 'post-01',
+            _content: '## Lamp\n\nA hexo blog editor.\n\n',
+          },
+        ],
+      })
       resolve()
     })
     createPost(t.context.blogPath, 'post-01')
@@ -101,52 +115,64 @@ test('#hexoInit', async t => {
 
 test('#createNewPost #watch - should be invoked successfully', async t => {
   let hexo = await hexoInit(t.context.blogPath)
-  await createArticle(hexo, {slug: 'post-test'})
-  assertArticalData(t, hexo, {draftLength: 1, partialArticalData: [
-    {
-      title: 'post-test',
-      slug: 'post-test',
-    },
-  ]})
+  await createArticle(hexo, { slug: 'post-test' })
+  assertArticalData(t, hexo, {
+    draftLength: 1,
+    partialArticalData: [
+      {
+        title: 'post-test',
+        slug: 'post-test',
+      },
+    ],
+  })
 })
 
 test('#createNewPost #slug - should be invoked successfully', async t => {
   let hexo = await hexoInit(t.context.blogPath)
-  await createArticle(hexo, {slug: 'post-test'})
-  assertArticalData(t, hexo, {draftLength: 1, partialArticalData: [
-    {
-      title: 'post-test',
-      slug: 'post-test',
-    },
-  ]})
+  await createArticle(hexo, { slug: 'post-test' })
+  assertArticalData(t, hexo, {
+    draftLength: 1,
+    partialArticalData: [
+      {
+        title: 'post-test',
+        slug: 'post-test',
+      },
+    ],
+  })
 })
 
 test('#createNewPost #title - should be invoked successfully', async t => {
   let hexo = await hexoInit(t.context.blogPath)
-  await createArticle(hexo, {title: '你好'})
-  assertArticalData(t, hexo, {draftLength: 1, partialArticalData: [
-    {
-      title: '你好',
-      slug: 'e4bda0e5a5bd',
-    },
-  ]})
+  await createArticle(hexo, { title: '你好' })
+  assertArticalData(t, hexo, {
+    draftLength: 1,
+    partialArticalData: [
+      {
+        title: '你好',
+        slug: 'e4bda0e5a5bd',
+      },
+    ],
+  })
 })
 
 test('#createNewPost #undefined - should be invoked successfully', async t => {
   let hexo = await hexoInit(t.context.blogPath)
   await createArticle(hexo, {})
-  assertArticalData(t, hexo, {draftLength: 1, partialArticalData: [
-    {
-      title: 'undefined',
-      slug: 'undefined',
-    },
-  ]})
+  assertArticalData(t, hexo, {
+    draftLength: 1,
+    partialArticalData: [
+      {
+        title: 'undefined',
+        slug: 'undefined',
+      },
+    ],
+  })
 })
 
 test('#createNewPost - should fail', async t => {
   let hexo = await hexoInit(t.context.blogPath)
   createPost(t.context.blogPath, 'post-02', 'draft')
-  const result = await createArticle(hexo, {slug: 'post-02'})
+  const result = await createArticle(hexo, { slug: 'post-02' })
   t.is((result as any).message, '40001: 文件已存在')
 })
 
@@ -167,13 +193,16 @@ test('#updateActicle #post - should be invoked successfully', async t => {
   // update
   await updateArticle(hexo, article)
 
-  assertArticalData(t, hexo, {postLength: 2, partialArticalData: [
-    {
-      title: 'Post 02',
-      slug: 'post-02',
-      _content: '## Lamp\n\nA hexo blog editor.\n\nTest content.',
-    },
-  ]})
+  assertArticalData(t, hexo, {
+    postLength: 2,
+    partialArticalData: [
+      {
+        title: 'Post 02',
+        slug: 'post-02',
+        _content: '## Lamp\n\nA hexo blog editor.\n\nTest content.',
+      },
+    ],
+  })
 })
 
 test('#updateActicle #draft - should be invoked successfully', async t => {
@@ -186,21 +215,24 @@ test('#updateActicle #draft - should be invoked successfully', async t => {
   let newArticle = {
     ...article,
     full_source: article.full_source,
-    _content: article._content + 'Test content.' ,
+    _content: article._content + 'Test content.',
     tags: ['tag-1', 'tag-2'],
   }
 
   // update
   await updateArticle(hexo, newArticle, article)
 
-  assertArticalData(t, hexo, {draftLength: 1, partialArticalData: [
-    {
-      title: 'Post 02',
-      slug: 'post-02',
-      _content: '## Lamp\n\nA hexo blog editor.\n\nTest content.',
-      tags: ['tag-1', 'tag-2']
-    },
-  ]})
+  assertArticalData(t, hexo, {
+    draftLength: 1,
+    partialArticalData: [
+      {
+        title: 'Post 02',
+        slug: 'post-02',
+        _content: '## Lamp\n\nA hexo blog editor.\n\nTest content.',
+        tags: ['tag-1', 'tag-2'],
+      },
+    ],
+  })
 })
 
 test('#moveArticle #post_to_draft - should be invoked successfully', async t => {
@@ -211,20 +243,27 @@ test('#moveArticle #post_to_draft - should be invoked successfully', async t => 
   const fullSource = `${t.context.blogPath}/source/_posts/post-01.md`
 
   // move
-  await moveArticle(hexo, fullSource.replace('_posts/post-01', '_drafts/post-02'), fullSource)
+  await moveArticle(
+    hexo,
+    fullSource.replace('_posts/post-01', '_drafts/post-02'),
+    fullSource
+  )
 
-  assertArticalData(t, hexo, {draftLength: 2, partialArticalData: [
-    {
-      title: 'Post 01',
-      slug: 'post-3',
-      _content: '## Lamp\n\nA hexo blog editor.\n\n',
-    },
-    {
-      title: 'Post 02',
-      slug: 'post-02',
-      _content: '## Lamp\n\nA hexo blog editor.\n\n',
-    },
-  ]})
+  assertArticalData(t, hexo, {
+    draftLength: 2,
+    partialArticalData: [
+      {
+        title: 'Post 01',
+        slug: 'post-3',
+        _content: '## Lamp\n\nA hexo blog editor.\n\n',
+      },
+      {
+        title: 'Post 02',
+        slug: 'post-02',
+        _content: '## Lamp\n\nA hexo blog editor.\n\n',
+      },
+    ],
+  })
 })
 
 test('#publishArticle - should be invoked successfully', async t => {
@@ -234,7 +273,7 @@ test('#publishArticle - should be invoked successfully', async t => {
   const fullSource = `${t.context.blogPath}/source/_drafts/post-02.md`
   await publishArticle(hexo, fullSource)
 
-  assertArticalData(t, hexo, {postLength: 2})
+  assertArticalData(t, hexo, { postLength: 2 })
 })
 
 test('#withdrawArticle - should be invoked successfully', async t => {
@@ -244,18 +283,20 @@ test('#withdrawArticle - should be invoked successfully', async t => {
   const fullSource = `${t.context.blogPath}/source/_posts/post-02.md`
   await withdrawArticle(hexo, fullSource)
 
-  assertArticalData(t, hexo, {draftLength: 1})
+  assertArticalData(t, hexo, { draftLength: 1 })
 })
 
 test('#withGetArticleData - should be invoked successfully', async t => {
   let hexo = await hexoInit(t.context.blogPath)
   let createArticleEx = withGetArticleData(createArticle)
-  const articleData = await createArticleEx(hexo, {title: '你好'})
+  const articleData = await createArticleEx(hexo, { title: '你好' })
   t.is(articleData.posts.length, 1)
   t.is(articleData.drafts.length, 1)
-  expect(Object.keys(articleData.data)).to.containSubset([].concat(articleData.posts, articleData.drafts))
+  expect(Object.keys(articleData.data)).to.containSubset(
+    [].concat(articleData.posts, articleData.drafts)
+  )
   expect(Object.values(articleData.data)).to.containSubset([
-    {title: 'Hello World'},
+    { title: 'Hello World' },
     {
       title: '你好',
       slug: 'e4bda0e5a5bd',

@@ -65,6 +65,7 @@ module.exports = {
     'fs',
     'os',
     'path',
+    'hexo',
     /^rxjs/,
     /^react/,
     /^@material-ui/,
