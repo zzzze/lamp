@@ -46,20 +46,22 @@ if (argv.d) {
   electronDebug({
     isEnabled: true,
     showDevTools: true,
-    devToolsMode: 'undocked'
+    devToolsMode: 'undocked',
   })
 }
 
 app.on('ready', () => {
   if (process.platform === 'darwin') {
-    app.dock.setMenu(Menu.buildFromTemplate([
-      {
-        label: 'New window',
-        click () {
-          this.app.newWindow()
-        }
-      }
-    ]))
+    app.dock.setMenu(
+      Menu.buildFromTemplate([
+        {
+          label: 'New window',
+          click() {
+            this.app.newWindow()
+          },
+        },
+      ])
+    )
   }
   application.init()
   application.newWindow({ hidden: argv.hidden })

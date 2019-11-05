@@ -17,13 +17,13 @@ function normalizePath(path: string): string {
   (nodeModule as any).globalPaths.push(normalizePath(x))
 )
 
-if (process.env.TERMINUS_DEV) {
+if (process.env.LAMP_DEV) {
   ;(nodeModule as any).globalPaths.unshift(
     path.dirname(require('electron').remote.app.getAppPath())
   )
 }
 
-const builtinPluginsPath = process.env.TERMINUS_DEV
+const builtinPluginsPath = process.env.LAMP_DEV
   ? path.dirname(require('electron').remote.app.getAppPath())
   : path.join((process as any).resourcesPath, 'builtin-plugins')
 
@@ -48,6 +48,7 @@ if (process.env.LAMP_PLUGINS) {
     (nodeModule as any).globalPaths.push(normalizePath(x))
   )
 }
+console.log((nodeModule as any).globalPaths)
 
 export type ProgressCallback = (current: number, total: number) => void
 

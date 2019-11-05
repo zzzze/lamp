@@ -7,13 +7,16 @@ export class Application {
   private tray: Tray
   private windows: Window[] = []
 
-  constructor () {
+  constructor() {
     ipcMain.on('app:config-change', () => {
       this.broadcast('host:config-change')
     })
 
     const configData = loadConfig()
-    if (process.platform === 'linux' && ((configData.appearance || {}).opacity || 1) !== 1) {
+    if (
+      process.platform === 'linux' &&
+      ((configData.appearance || {}).opacity || 1) !== 1
+    ) {
       app.commandLine.appendSwitch('enable-transparent-visuals')
       app.disableHardwareAcceleration()
     }
@@ -27,11 +30,13 @@ export class Application {
     }
   }
 
-  init () {
-    electron.screen.on('display-metrics-changed', () => this.broadcast('host:display-metrics-changed'))
+  init() {
+    electron.screen.on('display-metrics-changed', () =>
+      this.broadcast('host:display-metrics-changed')
+    )
   }
 
-  async newWindow (options?: WindowOptions): Promise<Window> {
+  async newWindow(options?: WindowOptions): Promise<Window> {
     let window = new Window(options)
     this.windows.push(window)
     window.visible$.subscribe(visible => {
@@ -48,62 +53,66 @@ export class Application {
     return window
   }
 
-  broadcast (event, ...args) {
+  broadcast(event, ...args) {
     for (let window of this.windows) {
       window.send(event, ...args)
     }
   }
 
-  async send (event, ...args) {
+  async send(event, ...args) {
     if (!this.hasWindows()) {
       await this.newWindow()
     }
     this.windows.filter(w => !w.isDestroyed())[0].send(event, ...args)
   }
 
-  enableTray () {
+  enableTray() {
     if (this.tray) {
       return
     }
     if (process.platform === 'darwin') {
       this.tray = new Tray(`${app.getAppPath()}/assets/tray-darwinTemplate.png`)
-      this.tray.setPressedImage(`${app.getAppPath()}/assets/tray-darwinHighlightTemplate.png`)
+      this.tray.setPressedImage(
+        `${app.getAppPath()}/assets/tray-darwinHighlightTemplate.png`
+      )
     } else {
       this.tray = new Tray(`${app.getAppPath()}/assets/tray.png`)
     }
 
-    this.tray.on('click', () => setTimeout(() => this.focus()));
+    this.tray.on('click', () => setTimeout(() => this.focus()))
 
-    const contextMenu = Menu.buildFromTemplate([{
-      label: 'Show',
-      click: () => this.focus(),
-    }])
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Show',
+        click: () => this.focus(),
+      },
+    ])
 
-      if (process.platform !== 'darwin') {
-        this.tray.setContextMenu(contextMenu)
-      }
+    if (process.platform !== 'darwin') {
+      this.tray.setContextMenu(contextMenu)
+    }
 
-      this.tray.setToolTip(`Lamp ${app.getVersion()}`)
+    this.tray.setToolTip(`Lamp ${app.getVersion()}`)
   }
 
-  disableTray () {
+  disableTray() {
     if (this.tray) {
       this.tray.destroy()
       this.tray = null
     }
   }
 
-  hasWindows () {
+  hasWindows() {
     return !!this.windows.length
   }
 
-  focus () {
+  focus() {
     for (let window of this.windows) {
       window.show()
     }
   }
 
-  private setupMenu () {
+  private setupMenu() {
     let template: Electron.MenuItemConstructorOptions[] = [
       {
         label: 'Application',
@@ -130,7 +139,7 @@ export class Application {
           {
             label: 'Quit',
             accelerator: 'Cmd+Q',
-            click () {
+            click() {
               app.quit()
             },
           },
@@ -178,12 +187,12 @@ export class Application {
         submenu: [
           {
             label: 'Website',
-            click () {
+            click() {
               shell.openExternal('https://eugeny.github.io/terminus')
             },
           },
         ],
-      }
+      },
     ]
 
     Menu.setApplicationMenu(Menu.buildFromTemplate(template))

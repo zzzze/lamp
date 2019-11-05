@@ -3,16 +3,18 @@ import { debounceTime } from 'rxjs/operators'
 import { BrowserWindow, app, ipcMain, Rectangle, screen } from 'electron'
 import * as ElectronConfig from 'electron-config'
 import * as os from 'os'
-
 import { loadConfig } from './config'
+import addDevTools from './addDevTools'
 
 let SetWindowCompositionAttribute: any
 let AccentState: any
 let DwmEnableBlurBehindWindow: any
 if (process.platform === 'win32') {
-  SetWindowCompositionAttribute = require('windows-swca').SetWindowCompositionAttribute
+  SetWindowCompositionAttribute = require('windows-swca')
+    .SetWindowCompositionAttribute
   AccentState = require('windows-swca').ACCENT_STATE
-  DwmEnableBlurBehindWindow = require('windows-blurbehind').DwmEnableBlurBehindWindow
+  DwmEnableBlurBehindWindow = require('windows-blurbehind')
+    .DwmEnableBlurBehindWindow
 }
 
 export interface WindowOptions {
@@ -27,18 +29,20 @@ export class Window {
   private windowBounds: Rectangle
   private closing = false
 
-  get visible$ (): Observable<boolean> { return this.visible }
+  get visible$(): Observable<boolean> {
+    return this.visible
+  }
 
-  constructor (options?: WindowOptions) {
-    let configData = loadConfig()
+  constructor(options?: WindowOptions) {
+    const configData = loadConfig()
 
     options = options || {}
 
     this.windowConfig = new ElectronConfig({ name: 'window' })
     this.windowBounds = this.windowConfig.get('windowBoundaries')
 
-    let maximized = this.windowConfig.get('maximized')
-    let bwOptions: Electron.BrowserWindowConstructorOptions = {
+    const maximized = this.windowConfig.get('maximized')
+    const bwOptions: Electron.BrowserWindowConstructorOptions = {
       width: 800,
       height: 600,
       title: 'Lamp',
@@ -49,19 +53,38 @@ export class Window {
       },
       frame: false,
       show: false,
-      backgroundColor: '#00000000'
+      backgroundColor: '#00000000',
     }
 
     if (this.windowBounds) {
       Object.assign(bwOptions, this.windowBounds)
-      const closestDisplay = screen.getDisplayNearestPoint( {x: this.windowBounds.x, y: this.windowBounds.y} )
+      const closestDisplay = screen.getDisplayNearestPoint({
+        x: this.windowBounds.x,
+        y: this.windowBounds.y,
+      })
 
-      const [left1, top1, right1, bottom1] = [this.windowBounds.x, this.windowBounds.y, this.windowBounds.x + this.windowBounds.width, this.windowBounds.y + this.windowBounds.height];
-      const [left2, top2, right2, bottom2] = [closestDisplay.bounds.x, closestDisplay.bounds.y, closestDisplay.bounds.x + closestDisplay.bounds.width, closestDisplay.bounds.y + closestDisplay.bounds.height];
+      const [left1, top1, right1, bottom1] = [
+        this.windowBounds.x,
+        this.windowBounds.y,
+        this.windowBounds.x + this.windowBounds.width,
+        this.windowBounds.y + this.windowBounds.height,
+      ]
+      const [left2, top2, right2, bottom2] = [
+        closestDisplay.bounds.x,
+        closestDisplay.bounds.y,
+        closestDisplay.bounds.x + closestDisplay.bounds.width,
+        closestDisplay.bounds.y + closestDisplay.bounds.height,
+      ]
 
-      if ((left2 > right1 || right2 < left1 || top2 > bottom1 || bottom2 < top1) && !maximized) {
-        bwOptions.x = closestDisplay.bounds.width / 2 - bwOptions.width / 2;
-        bwOptions.y = closestDisplay.bounds.height / 2 - bwOptions.height / 2;
+      if (
+        (left2 > right1 ||
+          right2 < left1 ||
+          top2 > bottom1 ||
+          bottom2 < top1) &&
+        !maximized
+      ) {
+        bwOptions.x = closestDisplay.bounds.width / 2 - bwOptions.width / 2
+        bwOptions.y = closestDisplay.bounds.height / 2 - bwOptions.height / 2
       }
     }
 
@@ -81,7 +104,10 @@ export class Window {
     this.window.once('ready-to-show', () => {
       if (process.platform === 'darwin') {
         this.window.setVibrancy('dark')
-      } else if (process.platform === 'win32' && (configData.appearance || {}).vibrancy) {
+      } else if (
+        process.platform === 'win32' &&
+        (configData.appearance || {}).vibrancy
+      ) {
         this.setVibrancy(true)
       }
 
@@ -95,7 +121,10 @@ export class Window {
       }
     })
 
-    this.window.loadURL(`file://${app.getAppPath()}/dist/index.html?${this.window.id}`, { extraHeaders: 'pragma: no-cache\n' })
+    this.window.loadURL(
+      `file://${app.getAppPath()}/dist/index.html?${this.window.id}`,
+      { extraHeaders: 'pragma: no-cache\n' }
+    )
     if (process.platform !== 'darwin') {
       this.window.setMenu(null)
     }
@@ -103,7 +132,8 @@ export class Window {
     this.setupWindowManagement()
 
     this.ready = new Promise(resolve => {
-      const listener = event => {
+      addDevTools()
+      const listener = (event: any) => {
         if (event.sender === this.window.webContents) {
           ipcMain.removeListener('app:ready', listener as any)
           resolve()
@@ -113,33 +143,40 @@ export class Window {
     })
   }
 
-  setVibrancy (enabled: boolean, type?: string) {
+  setVibrancy(enabled: boolean, type?: string) {
     if (process.platform === 'win32') {
       if (parseFloat(os.release()) >= 10) {
         let attribValue = AccentState.ACCENT_DISABLED
         if (enabled) {
-          if (parseInt(os.release().split('.')[2]) >= 17063 && type === 'fluent') {
+          if (
+            parseInt(os.release().split('.')[2]) >= 17063 &&
+            type === 'fluent'
+          ) {
             attribValue = AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND
           } else {
             attribValue = AccentState.ACCENT_ENABLE_BLURBEHIND
           }
         }
-        SetWindowCompositionAttribute(this.window.getNativeWindowHandle(), attribValue, 0x00000000)
+        SetWindowCompositionAttribute(
+          this.window.getNativeWindowHandle(),
+          attribValue,
+          0x00000000
+        )
       } else {
         DwmEnableBlurBehindWindow(this.window, enabled)
       }
     }
   }
 
-  show () {
+  show() {
     this.window.show()
   }
 
-  focus () {
+  focus() {
     this.window.focus()
   }
 
-  send (event, ...args) {
+  send(event: any, ...args: any[]) {
     if (!this.window) {
       return
     }
@@ -147,10 +184,10 @@ export class Window {
   }
 
   isDestroyed() {
-    return !this.window || this.window.isDestroyed();
+    return !this.window || this.window.isDestroyed()
   }
 
-  private setupWindowManagement () {
+  private setupWindowManagement() {
     this.window.on('show', () => {
       this.visible.next(true)
       this.window.webContents.send('host:window-shown')
@@ -160,18 +197,24 @@ export class Window {
       this.visible.next(false)
     })
 
-    let moveSubscription = new Observable<void>(observer => {
+    const moveSubscription = new Observable<void>(observer => {
       this.window.on('move', () => observer.next())
-    }).pipe(debounceTime(250)).subscribe(() => {
-      this.window.webContents.send('host:window-moved')
     })
+      .pipe(debounceTime(250))
+      .subscribe(() => {
+        this.window.webContents.send('host:window-moved')
+      })
 
     this.window.on('closed', () => {
       moveSubscription.unsubscribe()
     })
 
-    this.window.on('enter-full-screen', () => this.window.webContents.send('host:window-enter-full-screen'))
-    this.window.on('leave-full-screen', () => this.window.webContents.send('host:window-leave-full-screen'))
+    this.window.on('enter-full-screen', () =>
+      this.window.webContents.send('host:window-enter-full-screen')
+    )
+    this.window.on('leave-full-screen', () =>
+      this.window.webContents.send('host:window-leave-full-screen')
+    )
 
     this.window.on('close', event => {
       if (!this.closing) {
@@ -288,7 +331,7 @@ export class Window {
     this.window.webContents.on('new-window', event => event.preventDefault())
   }
 
-  private destroy () {
+  private destroy() {
     this.window = null
     this.visible.complete()
   }

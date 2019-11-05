@@ -4,9 +4,9 @@
     "packages/*"
   ],
   "scripts": {
-    "watch": "cross-env TERMINUS_DEV=1 webpack --progress --color --watch",
-    "start": "cross-env TERMINUS_DEV=1 electron packages/app --debug",
-    "prod": "cross-env TERMINUS_DEV=1 electron packages/app",
+    "watch": "cross-env LAMP_DEV=1 webpack --progress --color --watch",
+    "start": "cross-env LAMP_DEV=1 electron packages/app --debug",
+    "prod": "cross-env LAMP_DEV=1 electron packages/app",
     "test-hexo-integration": "rm -rf packages/lamp-core/tests/integration/tmp/ || : && ava packages/lamp-core/tests/integration/**.test.ts --verbose",
     "test-hexo-unit": "ava packages/lamp-core/tests/unit/**.test.ts --verbose",
     "test": "npm run test-hexo-unit && npm run test-hexo-integration",

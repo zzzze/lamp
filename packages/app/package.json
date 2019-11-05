@@ -10,14 +10,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@lamp/shared": "^1.0.0",
+    "@types/glob": "^7.1.1",
     "electron-config": "^2.0.0",
     "electron-debug": "^3.0.1",
     "electron-is-dev": "^1.1.0",
+    "glob": "^7.1.5",
     "js-yaml": "^3.13.1",
     "mz": "^2.7.0",
     "rxjs": "^6.5.3",
-    "rxjs-compat": "^6.5.3",
-    "@lamp/shared": "^1.0.0"
+    "rxjs-compat": "^6.5.3"
   },
   "optionalDependencies": {
     "windows-blurbehind": "^1.0.1",
