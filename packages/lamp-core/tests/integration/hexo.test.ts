@@ -11,9 +11,9 @@ import {
   moveArticle,
   publishArticle,
   withdrawArticle,
-} from '../../src/hexo'
-import withWatcher from '../../src/hexo/withWatcher'
-import { IArticleData } from '../../src/hexo/types'
+} from '../../src/hexoApi/'
+import withWatcher from '../../src/hexoApi/withWatcher'
+import { IArticleData } from '../../src/hexoApi/types'
 import * as chaiSubset from 'chai-subset'
 import * as chai from 'chai'
 import { createBlogProject, createPost } from './utils'
@@ -155,19 +155,19 @@ test('#createNewPost #title - should be invoked successfully', async t => {
   })
 })
 
-test('#createNewPost #undefined - should be invoked successfully', async t => {
-  let hexo = await hexoInit(t.context.blogPath)
-  await createArticle(hexo, {})
-  assertArticalData(t, hexo, {
-    draftLength: 1,
-    partialArticalData: [
-      {
-        title: 'undefined',
-        slug: 'undefined',
-      },
-    ],
-  })
-})
+// test('#createNewPost #undefined - should be invoked successfully', async t => {
+//   let hexo = await hexoInit(t.context.blogPath)
+//   await createArticle(hexo, {})
+//   assertArticalData(t, hexo, {
+//     draftLength: 1,
+//     partialArticalData: [
+//       {
+//         title: 'undefined',
+//         slug: 'undefined',
+//       },
+//     ],
+//   })
+// })
 
 test('#createNewPost - should fail', async t => {
   let hexo = await hexoInit(t.context.blogPath)
