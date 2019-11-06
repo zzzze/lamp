@@ -6,28 +6,39 @@ import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
     container: {
       width: 200,
-      '&:hover $action': {
+      '&:hover .action-custom': {
         display: 'block',
         color: 'red',
       },
     },
+  })
+)
+
+const useActionStyles = makeStyles((_theme: Theme) =>
+  createStyles({
     action: {
       display: 'none',
     },
   })
 )
 
-const PostList: React.FC = () => {
-  const classes = useStyles()
+interface PostListItemProps {
+  data: any
+}
 
+const PostListItem: React.FC<PostListItemProps> = ({ data }) => {
+  const classes = useStyles()
+  const actionClasses = useActionStyles()
   return (
     <ListItem classes={classes}>
-      <ListItemText primary="Single-line item" />
-      <ListItemSecondaryAction className={classes.action}>
+      <ListItemText primary={data.title} />
+      <ListItemSecondaryAction
+        className={actionClasses.action + ' action-custom'}
+      >
         <IconButton edge="end" aria-label="delete">
           <DeleteIcon />
         </IconButton>
@@ -39,4 +50,4 @@ const PostList: React.FC = () => {
   )
 }
 
-export default PostList
+export default PostListItem

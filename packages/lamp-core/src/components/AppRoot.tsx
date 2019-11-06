@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     mainContainer: {
       flex: 1,
       width: '100%',
+      overflow: 'hidden',
     },
     content: {
       flex: 1,

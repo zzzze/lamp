@@ -1,18 +1,20 @@
 import * as React from 'react'
 import List from '@material-ui/core/List'
 import PostListItem from 'components/PostListItem'
-import { useSelector, useDispatch } from 'react-redux'
 
-const PostList: React.FC = () => {
-  const posts = useSelector((state: any) => state.hexo.posts)
-  const dispatch = useDispatch()
-  React.useEffect(() => {
-    dispatch({ type: 'FETCH_REQUESTED' })
-  }, [])
-  console.log('posts', posts)
+interface PostListProps {
+  articleData: {
+    postIds: string[]
+    data: any
+  }
+}
+
+const PostList: React.FC<PostListProps> = ({ articleData }) => {
   return (
     <List component="nav" aria-label="secondary mailbox folders">
-      <PostListItem />
+      {articleData.postIds.map((postId: string, index: number) => (
+        <PostListItem key={index} data={articleData.data[postId]} />
+      ))}
     </List>
   )
 }
