@@ -4,6 +4,8 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Tabbar from 'components/Tabbar'
 import Sidebar from 'components/Sidebar'
+import { IArticle } from 'hexoApi/types'
+import { ARTICLE_TYPE } from 'utils/constants'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,6 +27,16 @@ const useStyles = makeStyles((theme: Theme) =>
 const AppRoot: React.FC = () => {
   const classes = useStyles()
   const Editor = appService.getEditor()
+  const [selectedPost, setSelectedPost] = React.useState<Partial<IArticle>>({})
+  const [selectedPostType, setSelectedPostType] = React.useState<ARTICLE_TYPE>(
+    ARTICLE_TYPE.POST
+  )
+  const handleSelectedPostTypeChange = (postType: ARTICLE_TYPE) => {
+    setSelectedPostType(postType)
+  }
+  const handleSelectPost = (article: IArticle) => {
+    setSelectedPost(article)
+  }
   return (
     <div>
       <Grid
@@ -41,9 +53,14 @@ const AppRoot: React.FC = () => {
           spacing={0}
           className={classes.mainContainer}
         >
-          <Sidebar />
+          <Sidebar
+            selectedId={selectedPost._id || null}
+            onSelectPost={handleSelectPost}
+            selectedPostType={selectedPostType}
+            onSelectedPostTypeChange={handleSelectedPostTypeChange}
+          />
           <Grid item className={classes.content}>
-            <Editor />
+            <Editor value={selectedPost._content || ''} />
           </Grid>
         </Grid>
       </Grid>

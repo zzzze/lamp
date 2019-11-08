@@ -1,6 +1,6 @@
 import * as fsEx from 'fs-extra'
 import * as Hexo from 'hexo'
-import {renameFile} from '../utils'
+import { renameFile } from '../utils'
 import withWatcher from './withWatcher'
 
 function moveArticle(_: Hexo, newFullSource: string, oldFullSource: string) {

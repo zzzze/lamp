@@ -36,7 +36,7 @@ module.exports = {
     'space-before-function-paren': ['error', 'never'],
     // 'object-curly-spacing': ['error', 'never'],
     'arrow-parens': ['error', 'as-needed'],
-    indent: ['error', 2],
+    indent: ['error', 2, { "SwitchCase": 1 }],
     quotes: ['error', 'single'],
     'no-console': 0,
     'react/jsx-no-bind': 0,

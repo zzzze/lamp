@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     menu: {},
     menuIcon: {
-      padding: `${theme.spacing(1)}px 12px`,
+      padding: `${theme.spacing(1)}px`,
     },
     menuItemIcon: {
       minWidth: 30,
@@ -42,7 +42,6 @@ const Tabbar: React.FC = () => {
   }
 
   const menuButtonRenderers = appService.getMenuItemRenderers()
-  console.log(menuButtonRenderers)
 
   return (
     <Grid container item className={classes.tabBar}>

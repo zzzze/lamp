@@ -8,11 +8,11 @@ import { constants } from '@lamp/shared'
 const providers = {
   [constants.Provider.MENU_ITEM_RENDERER]: ({ classes }) => {
     return (
-      <MenuItem>
+      <MenuItem key="settings">
         <ListItemIcon className={classes.menuItemIcon}>
           <SettingsIcon fontSize="small" />
         </ListItemIcon>
-        <Typography variant="inherit">Settings</Typography>
+        <Typography variant="inherit">设置</Typography>
       </MenuItem>
     )
   },
