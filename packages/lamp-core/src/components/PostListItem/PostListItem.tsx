@@ -10,15 +10,13 @@ import PublishIcon from '@material-ui/icons/Publish'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
+import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { IArticle } from 'hexoApi/types'
 import { ARTICLE_TYPE } from 'utils/constants'
 import { useDispatch } from 'react-redux'
-import {
-  PUBLISH_ARTICLE_REQUEST,
-  WITHDRAW_ARTICLE,
-} from 'redux/types/hexo.type'
+import { PUBLISH_ARTICLE_REQUEST, WITHDRAW_ARTICLE } from 'redux/types/hexo.type'
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -62,12 +60,7 @@ interface PostListItemProps {
   selectedPostType: ARTICLE_TYPE
 }
 
-const PostListItem: React.FC<PostListItemProps> = ({
-  data,
-  onSelectPost,
-  selectedId,
-  selectedPostType,
-}) => {
+const PostListItem: React.FC<PostListItemProps> = ({ data, onSelectPost, selectedId, selectedPostType }) => {
   const dispatch = useDispatch()
   const classes = useStyles()
   const actionClasses = useActionStyles()
@@ -87,60 +80,51 @@ const PostListItem: React.FC<PostListItemProps> = ({
     dispatch({ type: WITHDRAW_ARTICLE, payload: data.full_source })
   }
   return (
-    <ListItem
-      classes={classes}
-      selected={selectedId === data._id}
-      onClick={() => onSelectPost(data)}
-    >
-      <ListItemText className={actionClasses.text} primary={data.title} />
-      <ListItemSecondaryAction
-        className={actionClasses.action + ' action-custom'}
-      >
-        <IconButton
-          aria-label="more"
-          aria-controls="long-menu"
-          aria-haspopup="true"
-          onClick={handleClick}
-        >
-          <MoreVertIcon />
-        </IconButton>
-        <Menu
-          id="long-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={open}
-          onClose={handleClose}
-          PaperProps={{
-            style: {
-              width: 200,
-            },
-          }}
-        >
-          {selectedPostType === ARTICLE_TYPE.POST && (
-            <MenuItem onClick={handleWithdraw}>
-              <ListItemIcon>
-                <RemoveCircleOutlineIcon fontSize="small" />
-              </ListItemIcon>
-              <Typography variant="inherit">撤回</Typography>
-            </MenuItem>
-          )}
-          {selectedPostType === ARTICLE_TYPE.DRAFT && [
-            <MenuItem key="publish" onClick={handlePublish}>
-              <ListItemIcon>
-                <PublishIcon fontSize="small" />
-              </ListItemIcon>
-              <Typography variant="inherit">发布</Typography>
-            </MenuItem>,
-            <MenuItem key="delete">
-              <ListItemIcon>
-                <DeleteIcon fontSize="small" />
-              </ListItemIcon>
-              <Typography variant="inherit">删除</Typography>
-            </MenuItem>,
-          ]}
-        </Menu>
-      </ListItemSecondaryAction>
-    </ListItem>
+    <Tooltip title={data.title}>
+      <ListItem classes={classes} selected={selectedId === data._id} divider onClick={() => onSelectPost(data)}>
+        <ListItemText className={actionClasses.text} primary={data.title} />
+        <ListItemSecondaryAction className={actionClasses.action + ' action-custom'}>
+          <IconButton aria-label="more" aria-controls="long-menu" aria-haspopup="true" onClick={handleClick}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu
+            id="long-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={open}
+            onClose={handleClose}
+            PaperProps={{
+              style: {
+                width: 200,
+              },
+            }}
+          >
+            {selectedPostType === ARTICLE_TYPE.POST && (
+              <MenuItem onClick={handleWithdraw}>
+                <ListItemIcon>
+                  <RemoveCircleOutlineIcon fontSize="small" />
+                </ListItemIcon>
+                <Typography variant="inherit">撤回</Typography>
+              </MenuItem>
+            )}
+            {selectedPostType === ARTICLE_TYPE.DRAFT && [
+              <MenuItem key="publish" onClick={handlePublish}>
+                <ListItemIcon>
+                  <PublishIcon fontSize="small" />
+                </ListItemIcon>
+                <Typography variant="inherit">发布</Typography>
+              </MenuItem>,
+              <MenuItem key="delete">
+                <ListItemIcon>
+                  <DeleteIcon fontSize="small" />
+                </ListItemIcon>
+                <Typography variant="inherit">删除</Typography>
+              </MenuItem>,
+            ]}
+          </Menu>
+        </ListItemSecondaryAction>
+      </ListItem>
+    </Tooltip>
   )
 }
 

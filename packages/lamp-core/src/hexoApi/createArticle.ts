@@ -11,9 +11,7 @@ function createArticle(hexo: Hexo, options: { slug?: string; title?: string }) {
     encodeURI(options.title || '')
       .replace(/\W/g, '')
       .toLowerCase()
-  const filepath = pathUtils.makePath(
-    path.join(projectPath, `source/_drafts/${slug}.md`)
-  )
+  const filepath = pathUtils.makePath(path.join(projectPath, `source/_drafts/${slug}.md`))
 
   if (fsEx.existsSync(filepath)) {
     return new LError(40001)

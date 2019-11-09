@@ -14,12 +14,7 @@ interface PostListProps {
   selectedPostType: ARTICLE_TYPE
 }
 
-const PostList: React.FC<PostListProps> = ({
-  articleData,
-  onSelectPost,
-  selectedId,
-  selectedPostType,
-}) => {
+const PostList: React.FC<PostListProps> = ({ articleData, onSelectPost, selectedId, selectedPostType }) => {
   return (
     <List component="nav" aria-label="secondary mailbox folders">
       {articleData.postIds.map((postId: string, index: number) => (

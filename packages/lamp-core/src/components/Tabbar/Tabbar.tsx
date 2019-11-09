@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     menu: {},
     menuIcon: {
-      padding: `${theme.spacing(1)}px`,
+      padding: theme.spacing(1),
     },
     menuItemIcon: {
       minWidth: 30,

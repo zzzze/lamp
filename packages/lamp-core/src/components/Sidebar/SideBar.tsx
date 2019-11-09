@@ -9,8 +9,9 @@ import PostList from 'components/PostList'
 import { useSelector, useDispatch } from 'react-redux'
 import { IArticle } from 'hexoApi/types'
 import { ARTICLE_TYPE } from 'utils/constants'
+import SidebarActionButtons from 'components/SidebarActionButtons'
 
-const useStyles = makeStyles((_theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     sidebar: {
       width: 200,
@@ -19,6 +20,11 @@ const useStyles = makeStyles((_theme: Theme) =>
     content: {
       flex: 1,
       overflowY: 'scroll',
+    },
+    actionButtons: {
+      padding: theme.spacing(1),
+      paddingTop: 0,
+      paddingBottom: 0,
     },
     nav: {},
   })
@@ -31,12 +37,7 @@ interface SidebarProps {
   onSelectedPostTypeChange: (type: ARTICLE_TYPE) => void
 }
 
-const Sidebar: React.FC<SidebarProps> = ({
-  selectedId,
-  onSelectPost,
-  selectedPostType,
-  onSelectedPostTypeChange,
-}) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPostType, onSelectedPostTypeChange }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const state = useSelector((state: any) => ({
@@ -55,13 +56,15 @@ const Sidebar: React.FC<SidebarProps> = ({
     postIds: string[]
     data: IArticle[]
   } = {
-    postIds:
-      selectedPostType === ARTICLE_TYPE.POST ? state.posts : state.drafts,
+    postIds: selectedPostType === ARTICLE_TYPE.POST ? state.posts : state.drafts,
     data: state.data,
   }
 
   return (
     <Grid container direction="column" item className={classes.sidebar}>
+      <Grid item className={classes.actionButtons}>
+        <SidebarActionButtons />
+      </Grid>
       <Grid item className={classes.content}>
         <PostList
           selectedPostType={selectedPostType}
@@ -71,21 +74,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         />
       </Grid>
       <Grid item className={classes.nav}>
-        <BottomNavigation
-          value={selectedPostType}
-          onChange={handleNavChange}
-          showLabels
-        >
-          <BottomNavigationAction
-            label="文章"
-            value={ARTICLE_TYPE.POST}
-            icon={<BookmarkIcon />}
-          />
-          <BottomNavigationAction
-            label="草稿"
-            value={ARTICLE_TYPE.DRAFT}
-            icon={<BookmarkBorderIcon />}
-          />
+        <BottomNavigation value={selectedPostType} onChange={handleNavChange} showLabels>
+          <BottomNavigationAction label="文章" value={ARTICLE_TYPE.POST} icon={<BookmarkIcon />} />
+          <BottomNavigationAction label="草稿" value={ARTICLE_TYPE.DRAFT} icon={<BookmarkBorderIcon />} />
         </BottomNavigation>
       </Grid>
     </Grid>
