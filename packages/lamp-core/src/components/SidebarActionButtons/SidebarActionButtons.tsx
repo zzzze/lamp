@@ -12,6 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import ArticleCreationDialog from 'components/ArticleCreationDialog'
+import { useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -26,6 +27,7 @@ export default function SplitButton() {
   const [open, setOpen] = React.useState(false)
   const [openCreationDialog, setOpenCreationDialog] = React.useState(false)
   const anchorRef = React.useRef<HTMLDivElement>(null)
+  const dispatch = useDispatch()
 
   const handleAddItemClick = () => {
     handleToggleCreationDialog(true)
@@ -48,7 +50,9 @@ export default function SplitButton() {
     setOpenCreationDialog(open)
   }
 
-  const handleRefresh = () => {}
+  const handleRefresh = () => {
+    dispatch({ type: 'FETCH_REQUESTED', payload: { refresh: true } })
+  }
 
   return (
     <>

@@ -6,10 +6,7 @@ const defaultOptions = {
   draft: true,
   silent: true,
 }
-export default async function hexoInit(
-  path: string,
-  options?: IHexoInitOptions
-): Promise<Hexo> {
+export default async function hexoInit(path: string, options?: IHexoInitOptions): Promise<Hexo> {
   options = {
     ...defaultOptions,
     ...(options || {}),

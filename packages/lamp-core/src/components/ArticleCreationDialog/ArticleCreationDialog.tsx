@@ -6,6 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import { useDispatch } from 'react-redux'
+import { CREATE_ARTICLE } from 'redux/types/hexo.type'
 
 interface ArticleCreationDialogProps {
   open: boolean
@@ -15,6 +17,7 @@ interface ArticleCreationDialogProps {
 const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({ open, handleToggle }) => {
   const [title, setTitle] = React.useState('')
   const [errorMsg, setErrorMsg] = React.useState('')
+  const dispatch = useDispatch()
   const handleClose = () => {
     setTitle('')
     setErrorMsg('')
@@ -29,7 +32,8 @@ const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({ open, han
   }
   const handleCreate = () => {
     if (validateInput()) {
-      handleToggle(false)
+      dispatch({ type: CREATE_ARTICLE, payload: { title } })
+      handleClose()
     }
   }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
