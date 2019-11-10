@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
@@ -11,7 +11,7 @@ import Popper from '@material-ui/core/Popper'
 import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import RefreshIcon from '@material-ui/icons/Refresh'
-import ArticleCreationDialog from 'components/ArticleCreationDialog'
+import ArticleMetaEditDialog from 'components/ArticleMetaEditDialog'
 import { useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((_theme: Theme) =>
@@ -25,13 +25,12 @@ const useStyles = makeStyles((_theme: Theme) =>
 export default function SplitButton() {
   const classes = useStyles()
   const [open, setOpen] = React.useState(false)
-  const [openCreationDialog, setOpenCreationDialog] = React.useState(false)
+  const [openDialog, setOpenDialog] = React.useState(false)
   const anchorRef = React.useRef<HTMLDivElement>(null)
   const dispatch = useDispatch()
 
   const handleAddItemClick = () => {
-    handleToggleCreationDialog(true)
-    // alert(`You clicked`)
+    handleToggleDialog(true)
   }
 
   const handleToggle = () => {
@@ -46,8 +45,8 @@ export default function SplitButton() {
     setOpen(false)
   }
 
-  const handleToggleCreationDialog = (open: boolean) => {
-    setOpenCreationDialog(open)
+  const handleToggleDialog = (open: boolean) => {
+    setOpenDialog(open)
   }
 
   const handleRefresh = () => {
@@ -88,7 +87,7 @@ export default function SplitButton() {
           </Grow>
         )}
       </Popper>
-      <ArticleCreationDialog open={openCreationDialog} handleToggle={handleToggleCreationDialog} />
+      <ArticleMetaEditDialog open={openDialog} handleToggle={handleToggleDialog} />
     </>
   )
 }

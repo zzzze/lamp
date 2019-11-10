@@ -6,6 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import RemoveCircleOutlineIcon from '@material-ui/icons/RemoveCircleOutline'
+import EditAttributesIcon from '@material-ui/icons/EditAttributes'
 import PublishIcon from '@material-ui/icons/Publish'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -58,9 +59,16 @@ interface PostListItemProps {
   selectedId: string | null
   onSelectPost: (article: IArticle) => void
   selectedPostType: ARTICLE_TYPE
+  onOpenEditMetaDialog: (title: string, slug: string, tags: string[]) => void
 }
 
-const PostListItem: React.FC<PostListItemProps> = ({ data, onSelectPost, selectedId, selectedPostType }) => {
+const PostListItem: React.FC<PostListItemProps> = ({
+  data,
+  onSelectPost,
+  selectedId,
+  selectedPostType,
+  onOpenEditMetaDialog,
+}) => {
   const dispatch = useDispatch()
   const classes = useStyles()
   const actionClasses = useActionStyles()
@@ -79,6 +87,19 @@ const PostListItem: React.FC<PostListItemProps> = ({ data, onSelectPost, selecte
   const handleWithdraw = () => {
     dispatch({ type: WITHDRAW_ARTICLE, payload: data.full_source })
   }
+  const handleEditMeta = () => {
+    onOpenEditMetaDialog(data.title, data.slug, (data as any).tags)
+  }
+
+  const renderEditMenuItem = () => (
+    <MenuItem key="edit-meta" onClick={handleEditMeta}>
+      <ListItemIcon>
+        <EditAttributesIcon fontSize="small" />
+      </ListItemIcon>
+      <Typography variant="inherit">编辑元信息</Typography>
+    </MenuItem>
+  )
+
   return (
     <Tooltip title={data.title}>
       <ListItem classes={classes} selected={selectedId === data._id} divider onClick={() => onSelectPost(data)}>
@@ -99,14 +120,15 @@ const PostListItem: React.FC<PostListItemProps> = ({ data, onSelectPost, selecte
               },
             }}
           >
-            {selectedPostType === ARTICLE_TYPE.POST && (
-              <MenuItem onClick={handleWithdraw}>
+            {selectedPostType === ARTICLE_TYPE.POST && [
+              renderEditMenuItem(),
+              <MenuItem key="withdraw" onClick={handleWithdraw}>
                 <ListItemIcon>
                   <RemoveCircleOutlineIcon fontSize="small" />
                 </ListItemIcon>
                 <Typography variant="inherit">撤回</Typography>
-              </MenuItem>
-            )}
+              </MenuItem>,
+            ]}
             {selectedPostType === ARTICLE_TYPE.DRAFT && [
               <MenuItem key="publish" onClick={handlePublish}>
                 <ListItemIcon>
@@ -114,6 +136,7 @@ const PostListItem: React.FC<PostListItemProps> = ({ data, onSelectPost, selecte
                 </ListItemIcon>
                 <Typography variant="inherit">发布</Typography>
               </MenuItem>,
+              renderEditMenuItem(),
               <MenuItem key="delete">
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />
