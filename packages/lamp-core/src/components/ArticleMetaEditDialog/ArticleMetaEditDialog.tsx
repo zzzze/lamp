@@ -25,11 +25,11 @@ const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({
   edit = false,
   title = '',
   slug = '',
-  tags = ['abc', 'def'],
+  tags = [],
 }) => {
   const [_title, setTitle] = React.useState(title)
   const [_slug, setSlug] = React.useState(slug)
-  // const [_tags, setTags] = React.useState(tags)
+  const [_tags, setTags] = React.useState(tags)
   const [titleError, setTitleError] = React.useState(false)
   const [slugError, setSlugError] = React.useState(false)
   const dispatch = useDispatch()
@@ -42,9 +42,9 @@ const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({
     setSlug(slug)
   }, [slug])
 
-  // React.useEffect(() => {
-  //   setTags(tags)
-  // }, [tags ? tags.join(',') : ''])
+  React.useEffect(() => {
+    setTags(tags)
+  }, [Array.isArray(tags) ? tags.join(',') : ''])
 
   const handleClose = () => {
     setTitle('')
@@ -73,6 +73,10 @@ const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({
   }
   const handleSlugChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSlug(event.target.value)
+  }
+
+  const handleTagsChange = (tags: string[]) => {
+    setTags(tags)
   }
 
   return (
@@ -114,7 +118,7 @@ const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({
           fullWidth
         />
 
-        <TagInput />
+        <TagInput value={_tags} onChange={handleTagsChange} />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">

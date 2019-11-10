@@ -16,7 +16,7 @@ export const styles = theme => {
       margin: 0,
       padding: 0,
       pointerEvents: 'none',
-      borderRadius: theme.spacing(0.5),
+      borderRadius: theme.shape.borderRadius,
       borderStyle: 'solid',
       borderWidth: 1,
       // Match the Input Label
@@ -24,14 +24,6 @@ export const styles = theme => {
         duration: theme.transitions.duration.shorter,
         easing: theme.transitions.easing.easeOut,
       }),
-
-      '.Mui-error ~ &': {
-        borderColor: theme.palette.error.main,
-      },
-
-      '.Mui-disabled ~ &': {
-        borderColor: theme.palette.action.disabled,
-      },
     },
     /* Styles applied to the legend element. */
     legend: {

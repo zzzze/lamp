@@ -2,25 +2,7 @@ import React from 'react'
 import clsx from 'clsx'
 import InputBase from '@material-ui/core/InputBase'
 import NotchedOutline from './NotchedOutline'
-import { withStyles, makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import Chip from '@material-ui/core/Chip'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    tagContainer: {
-      margin: theme.spacing(2),
-      borderTop: '1px gray dotted',
-      paddingTop: theme.spacing(2),
-      marginTop: 0,
-      display: 'flex',
-      flexWrap: 'wrap',
-    },
-    tag: {
-      display: 'flex',
-      margin: theme.spacing(0.5),
-    },
-  })
-)
+import { withStyles } from '@material-ui/core/styles'
 
 export const styles = theme => {
   const borderColor = theme.palette.type === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)'
@@ -30,24 +12,27 @@ export const styles = theme => {
     root: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
-      '&:hover $notchedOutline': {
+      '&:hover ~ $notchedOutline': {
         borderColor: theme.palette.text.primary,
       },
       // Reset on touch devices, it doesn't add specificity
       '@media (hover: none)': {
-        '&:hover $notchedOutline': {
+        '&:hover ~ $notchedOutline': {
           borderColor,
         },
       },
-      '&$focused $notchedOutline': {
+      '&$focused ~ $notchedOutline': {
         borderColor: theme.palette.primary.main,
         borderWidth: 2,
       },
-      '&$error $notchedOutline': {
+      '&$error ~ $notchedOutline': {
         borderColor: theme.palette.error.main,
       },
-      '&$disabled $notchedOutline': {
+      '&$disabled ~ $notchedOutline': {
         borderColor: theme.palette.action.disabled,
+      },
+      '&$focused ~ $dataPreviewContainer': {
+        borderColor: theme.palette.primary.main,
       },
     },
     /* Styles applied to the root element if the color is secondary. */
@@ -55,6 +40,16 @@ export const styles = theme => {
       '&$focused $notchedOutline': {
         borderColor: theme.palette.secondary.main,
       },
+    },
+    dataPreviewContainer: {
+      margin: theme.spacing(2),
+      marginLeft: theme.spacing(1.5),
+      marginRight: theme.spacing(1.5),
+      borderTop: `1px ${theme.palette.grey[400]} dashed`,
+      paddingTop: theme.spacing(2),
+      marginTop: 0,
+      display: 'flex',
+      flexWrap: 'wrap',
     },
     /* Styles applied to the root element if the component is focused. */
     focused: {},
@@ -126,45 +121,10 @@ const OutlinedInput = React.forwardRef(function OutlinedInput(props: any, ref) {
     multiline = false,
     notched,
     type = 'text',
+    renderDataPreview,
     ...other
   } = props as any
   const [suffixState, setSuffixState] = React.useState({})
-  const customClasses = useStyles()
-  const _tags = [
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-    '123',
-    '456',
-  ]
-  const handleDeleteTag = () => {}
 
   return (
     <>
@@ -188,18 +148,11 @@ const OutlinedInput = React.forwardRef(function OutlinedInput(props: any, ref) {
         type={type}
         {...other}
       />
-      <div className={customClasses.tagContainer} key="tag-container">
-        {_tags.map(tag => (
-          <Chip
-            className={customClasses.tag}
-            variant="outlined"
-            size="small"
-            label={tag}
-            key={tag}
-            onDelete={handleDeleteTag}
-          />
-        ))}
-      </div>
+      {renderDataPreview && (
+        <div className={classes.dataPreviewContainer} key="tag-container">
+          {renderDataPreview()}
+        </div>
+      )}
       <NotchedOutline
         key="outline"
         className={classes.notchedOutline}
