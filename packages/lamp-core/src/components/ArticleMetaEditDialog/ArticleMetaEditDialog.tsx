@@ -7,7 +7,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { useDispatch } from 'react-redux'
-import { CREATE_ARTICLE } from 'redux/types/hexo.type'
+import { CREATE_ARTICLE, UPDATE_ARTICLE } from 'redux/types/hexo.type'
 import TagInput from 'components/TagInput'
 
 interface ArticleCreationDialogProps {
@@ -19,7 +19,7 @@ interface ArticleCreationDialogProps {
   tags?: string[]
 }
 
-const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({
+const ArticleMetaEditDialog: React.FC<ArticleCreationDialogProps> = ({
   open,
   handleToggle,
   edit = false,
@@ -36,35 +36,48 @@ const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({
 
   React.useEffect(() => {
     setTitle(title)
-  }, [title])
+  }, [title, open])
 
   React.useEffect(() => {
     setSlug(slug)
-  }, [slug])
+  }, [slug, open])
 
   React.useEffect(() => {
     setTags(tags)
-  }, [Array.isArray(tags) ? tags.join(',') : ''])
+  }, [Array.isArray(tags) ? tags.join(',') : '', open])
 
   const handleClose = () => {
     setTitle('')
     setSlug('')
+    setTags([])
     setTitleError(false)
     setSlugError(false)
     handleToggle(false)
   }
-  const validateInput = () => {
+  const validateTitle = () => {
     setTitleError(!_title)
     return !!_title
   }
   const validateSlug = () => {
-    const result = !/^[\w-]{0,20}$/.test(_slug)
-    setSlugError(result)
-    return result
+    const invalidSlug = !/^[\w-]{0,20}$/.test(_slug)
+    setSlugError(invalidSlug)
+    return !invalidSlug
+  }
+  const handleSubmit = () => {
+    if (!edit) {
+      return handleCreate()
+    }
+    return handleUpdate()
   }
   const handleCreate = () => {
-    if (validateInput()) {
+    if (validateTitle() && validateSlug()) {
       dispatch({ type: CREATE_ARTICLE, payload: { title: _title, slug: _slug } })
+      handleClose()
+    }
+  }
+  const handleUpdate = () => {
+    if (validateTitle() && validateSlug()) {
+      dispatch({ type: UPDATE_ARTICLE, payload: { title: _title, slug: _slug, tags: _tags } })
       handleClose()
     }
   }
@@ -90,7 +103,7 @@ const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({
           autoFocus
           inputProps={{
             onFocus: () => setTitleError(false),
-            onBlur: () => setTimeout(validateInput, 300),
+            onBlur: () => setTimeout(validateTitle, 300),
           }}
           margin="dense"
           id="title"
@@ -117,14 +130,13 @@ const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({
           variant="outlined"
           fullWidth
         />
-
-        <TagInput value={_tags} onChange={handleTagsChange} />
+        {edit && <TagInput value={_tags} onChange={handleTagsChange} />}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
           取消
         </Button>
-        <Button onClick={handleCreate} color="primary">
+        <Button onClick={handleSubmit} color="primary">
           {edit ? '保存' : '创建'}
         </Button>
       </DialogActions>
@@ -132,4 +144,4 @@ const ArticleCreationDialog: React.FC<ArticleCreationDialogProps> = ({
   )
 }
 
-export default ArticleCreationDialog
+export default ArticleMetaEditDialog

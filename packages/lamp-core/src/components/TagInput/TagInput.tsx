@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) => {
   })
 })
 
-interface TagInput {
+interface TagInputProps {
   error: boolean
   disabled: boolean
   helperText: string
@@ -29,7 +29,7 @@ interface TagInput {
   onChange: (tags: string[]) => void
 }
 
-const ArticleCreationDialog: React.FC<Partial<TagInput>> = ({
+const TagInput: React.FC<Partial<TagInputProps>> = ({
   error,
   disabled,
   helperText,
@@ -123,4 +123,4 @@ const ArticleCreationDialog: React.FC<Partial<TagInput>> = ({
   )
 }
 
-export default ArticleCreationDialog
+export default TagInput

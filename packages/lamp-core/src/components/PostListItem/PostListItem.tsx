@@ -88,7 +88,9 @@ const PostListItem: React.FC<PostListItemProps> = ({
     dispatch({ type: WITHDRAW_ARTICLE, payload: data.full_source })
   }
   const handleEditMeta = () => {
-    onOpenEditMetaDialog(data.title, data.slug, (data as any).tags)
+    const tags = (data as any).tags.data || (data as any).tags
+    setAnchorEl(null)
+    onOpenEditMetaDialog(data.title, data.slug, tags)
   }
 
   const renderEditMenuItem = () => (

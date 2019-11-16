@@ -1,4 +1,5 @@
 import React from 'react'
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import InputBase from '@material-ui/core/InputBase'
 import NotchedOutline from './NotchedOutline'
@@ -31,26 +32,13 @@ export const styles = theme => {
       '&$disabled ~ $notchedOutline': {
         borderColor: theme.palette.action.disabled,
       },
-      '&$focused ~ $dataPreviewContainer': {
-        borderColor: theme.palette.primary.main,
-      },
     },
     /* Styles applied to the root element if the color is secondary. */
-    colorSecondary: {
-      '&$focused $notchedOutline': {
-        borderColor: theme.palette.secondary.main,
-      },
-    },
-    dataPreviewContainer: {
-      margin: theme.spacing(2),
-      marginLeft: theme.spacing(1.5),
-      marginRight: theme.spacing(1.5),
-      borderTop: `1px ${theme.palette.grey[400]} dashed`,
-      paddingTop: theme.spacing(2),
-      marginTop: 0,
-      display: 'flex',
-      flexWrap: 'wrap',
-    },
+    // colorSecondary: {
+    //   '&$focused $notchedOutline': {
+    //     borderColor: theme.palette.secondary.main,
+    //   },
+    // },
     /* Styles applied to the root element if the component is focused. */
     focused: {},
     /* Styles applied to the root element if `disabled={true}`. */
@@ -61,7 +49,7 @@ export const styles = theme => {
     },
     /* Styles applied to the root element if `endAdornment` is provided. */
     adornedEnd: {
-      paddingRight: 14,
+      paddingRight: 5,
     },
     /* Styles applied to the root element if `error={true}`. */
     error: {},
@@ -112,7 +100,27 @@ export const styles = theme => {
   }
 }
 
+const useStyles = makeStyles((theme: Theme) => {
+  return createStyles({
+    dataPreviewContainer: {
+      margin: theme.spacing(2),
+      marginLeft: theme.spacing(1.5),
+      marginRight: theme.spacing(1.5),
+      borderTop: `1px ${theme.palette.grey[400]} dashed`,
+      paddingTop: theme.spacing(2),
+      marginTop: 0,
+      display: 'flex',
+      flexWrap: 'wrap',
+
+      '.Mui-focused ~ &': {
+        borderColor: theme.palette.primary.main,
+      },
+    },
+  })
+})
+
 const OutlinedInput = React.forwardRef(function OutlinedInput(props: any, ref) {
+  const customClasses = useStyles()
   const {
     classes,
     fullWidth = false,
@@ -132,7 +140,6 @@ const OutlinedInput = React.forwardRef(function OutlinedInput(props: any, ref) {
         key="input"
         renderSuffix={state =>
           React.useMemo(() => {
-            console.log(state)
             setSuffixState(state)
           }, [JSON.stringify(state)])
         }
@@ -149,7 +156,7 @@ const OutlinedInput = React.forwardRef(function OutlinedInput(props: any, ref) {
         {...other}
       />
       {renderDataPreview && (
-        <div className={classes.dataPreviewContainer} key="tag-container">
+        <div className={customClasses.dataPreviewContainer} key="tag-container">
           {renderDataPreview()}
         </div>
       )}
