@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { Store } from 'redux'
-import { ADD_TOOLBAR_BUTTON_GENERATOR, SET_PROJECT_ROOT_REQUEST } from 'redux/types/app.type'
+import { ADD_TOOLBAR_BUTTON_GENERATOR } from 'redux/types/app.type'
 import { constants } from '@lamp/shared'
 import { EditorProps } from '@lamp/shared/types/editor'
+import { SET_PROJECT_ROOT_REQUEST } from 'redux/types/app.type'
 import store from 'redux/store'
 
 interface TraversalContext {

@@ -13,10 +13,7 @@ export class Application {
     })
 
     const configData = loadConfig()
-    if (
-      process.platform === 'linux' &&
-      ((configData.appearance || {}).opacity || 1) !== 1
-    ) {
+    if (process.platform === 'linux' && ((configData.appearance || {}).opacity || 1) !== 1) {
       app.commandLine.appendSwitch('enable-transparent-visuals')
       app.disableHardwareAcceleration()
     }
@@ -31,9 +28,7 @@ export class Application {
   }
 
   init() {
-    electron.screen.on('display-metrics-changed', () =>
-      this.broadcast('host:display-metrics-changed')
-    )
+    electron.screen.on('display-metrics-changed', () => this.broadcast('host:display-metrics-changed'))
   }
 
   async newWindow(options?: WindowOptions): Promise<Window> {
@@ -72,9 +67,7 @@ export class Application {
     }
     if (process.platform === 'darwin') {
       this.tray = new Tray(`${app.getAppPath()}/assets/tray-darwinTemplate.png`)
-      this.tray.setPressedImage(
-        `${app.getAppPath()}/assets/tray-darwinHighlightTemplate.png`
-      )
+      this.tray.setPressedImage(`${app.getAppPath()}/assets/tray-darwinHighlightTemplate.png`)
     } else {
       this.tray = new Tray(`${app.getAppPath()}/assets/tray.png`)
     }
@@ -175,12 +168,7 @@ export class Application {
       },
       {
         role: 'window',
-        submenu: [
-          { role: 'minimize' },
-          { role: 'zoom' },
-          { type: 'separator' },
-          { role: 'front' },
-        ],
+        submenu: [{ role: 'minimize' }, { role: 'zoom' }, { type: 'separator' }, { role: 'front' }],
       },
       {
         role: 'help',

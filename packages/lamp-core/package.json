@@ -20,6 +20,7 @@
   "dependencies": {
     "@lamp/shared": "^1.0.0",
     "clsx": "^1.0.4",
+    "electron-store": "^5.1.0",
     "react-redux": "^7.1.1",
     "redux": "^4.0.4",
     "redux-saga": "^1.1.1",

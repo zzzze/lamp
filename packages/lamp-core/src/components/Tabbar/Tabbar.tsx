@@ -72,7 +72,7 @@ const Tabbar: React.FC = () => {
             },
           }}
         >
-          {menuButtonRenderers.map(render => render({ classes }))}
+          {menuButtonRenderers.map(render => render({ classes, appService }))}
         </Menu>
       </Grid>
     </Grid>

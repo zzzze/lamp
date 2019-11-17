@@ -19,17 +19,12 @@ if (isDev) {
   // enableProdMode()
 }
 
-async function bootstrap(
-  plugins: PluginInfo[],
-  safeMode = false
-): Promise<any> {
+async function bootstrap(plugins: PluginInfo[], safeMode = false): Promise<any> {
   if (safeMode) {
     plugins = plugins.filter(x => x.isBuiltin)
   }
   const pluginsModules = await loadPlugins(plugins, (current, total) => {
-    ;(document.querySelector(
-      '.progress .bar'
-    ) as HTMLElement).style.width = `${(100 * current) / total}%` // eslint-disable-line
+    ;(document.querySelector('.progress .bar') as HTMLElement).style.width = `${(100 * current) / total}%` // eslint-disable-line
     if (current / total === 1) {
       setTimeout(() => {
         document.getElementsByTagName('loading')[0].className = 'hide'
