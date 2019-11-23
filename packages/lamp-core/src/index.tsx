@@ -6,13 +6,17 @@ import store from './redux/store'
 import { AppTypes } from '@lamp/shared'
 import ProjectInitDialog from 'components/ProjectInitDialog'
 import useForceUpdate from 'hooks/useForceUpdate'
+import ServiceContext from 'services/service.context'
+import appService from 'services/app.service'
 
 const App: React.FC = () => {
   const forceUpdate = useForceUpdate()
   const state = store.getState()
   return (
     <Provider store={store}>
-      {!state.app.projectRoot ? <ProjectInitDialog open onSelectProject={forceUpdate} /> : <AppRoot />}
+      <ServiceContext.Provider value={{ appService }}>
+        {!state.app.projectRoot ? <ProjectInitDialog open onSelectProject={forceUpdate} /> : <AppRoot />}
+      </ServiceContext.Provider>
     </Provider>
   )
 }

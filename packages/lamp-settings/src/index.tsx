@@ -20,9 +20,15 @@ const handleClose = () => {
 }
 
 const providers = {
-  [constants.Provider.MENU_ITEM_RENDERER]: ({ appService, classes }) => {
+  [constants.Provider.MENU_ITEM_RENDERER]: ({ appService, classes, afterClick }) => {
     return (
-      <MenuItem key="settings" onClick={() => renderSettingPage(appService)}>
+      <MenuItem
+        key="settings"
+        onClick={() => {
+          renderSettingPage(appService)
+          afterClick && afterClick()
+        }}
+      >
         <ListItemIcon className={classes.menuItemIcon}>
           <SettingsIcon fontSize="small" />
         </ListItemIcon>

@@ -4,8 +4,13 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { useSelector } from 'react-redux'
 import IconButton from '@material-ui/core/IconButton'
 import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import PublishIcon from '@material-ui/icons/Publish'
+import Typography from '@material-ui/core/Typography'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
-import appService from 'services/app.service'
+import Snackbar from '@material-ui/core/Snackbar'
+import ServiceContext from 'services/service.context'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,9 +31,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+let isDeploying = false
+
 const Tabbar: React.FC = () => {
   const classes = useStyles()
   const tabs = useSelector((state: any) => state.app.tabs)
+  const service = React.useContext(ServiceContext)
+  const [state, setState] = React.useState({
+    open: false,
+    message: 'test',
+  })
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -37,11 +49,35 @@ const Tabbar: React.FC = () => {
     setAnchorEl(event.currentTarget)
   }
 
-  const handleClose = () => {
+  const hidePopupMenu = () => {
     setAnchorEl(null)
   }
 
-  const menuButtonRenderers = appService.getMenuItemRenderers()
+  const handleDeploy = async function() {
+    if (isDeploying) return
+    isDeploying = true
+    setState({
+      open: true,
+      message: '部署中...',
+    })
+    hidePopupMenu()
+    await service.appService.hexoDeploy()
+    setState({
+      open: true,
+      message: '部署成功！',
+    })
+    setTimeout(
+      () =>
+        setState({
+          open: false,
+          message: '',
+        }),
+      1000
+    )
+    isDeploying = false
+  }
+
+  const menuButtonRenderers = service.appService.getMenuItemRenderers()
 
   return (
     <Grid container item className={classes.tabBar}>
@@ -65,15 +101,32 @@ const Tabbar: React.FC = () => {
           anchorEl={anchorEl}
           keepMounted
           open={open}
-          onClose={handleClose}
+          onClose={hidePopupMenu}
           PaperProps={{
             style: {
               width: 200,
             },
           }}
         >
-          {menuButtonRenderers.map(render => render({ classes, appService }))}
+          <MenuItem key="settings" onClick={handleDeploy}>
+            <ListItemIcon className={classes.menuItemIcon}>
+              <PublishIcon fontSize="small" />
+            </ListItemIcon>
+            <Typography variant="inherit">部署</Typography>
+          </MenuItem>
+          {menuButtonRenderers.map(render =>
+            render({ classes, appService: service.appService, afterClick: hidePopupMenu })
+          )}
         </Menu>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={state.open}
+          // onClose={handleCloseSnackbar}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={state.message}
+        />
       </Grid>
     </Grid>
   )

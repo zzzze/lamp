@@ -100,7 +100,7 @@ const SettingPage = ({ appService, onClose }) => {
                 type="text"
                 onChange={handleProjectRootChange}
                 variant="outlined"
-                style={{ width: 300 }}
+                style={{ flex: 1 }}
               />
               <Button variant="contained" style={{ marginLeft: 10 }} onClick={handleSelectProject}>
                 选择项目
