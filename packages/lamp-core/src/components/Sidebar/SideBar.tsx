@@ -49,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPos
     return onSelectedPostTypeChange(newValue)
   }
   React.useEffect(() => {
-    dispatch({ type: 'FETCH_REQUESTED' })
+    dispatch({ type: 'FETCH_REQUESTED', payload: { refresh: true } })
   }, [])
 
   const articleData: {

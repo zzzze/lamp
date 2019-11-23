@@ -12,12 +12,21 @@ const App: React.FC = () => {
   const state = store.getState()
   return (
     <Provider store={store}>
-      {!state.app.projectRoot && <ProjectInitDialog open onSelectProject={forceUpdate} />}
-      {state.app.projectRoot && <AppRoot />}
+      {!state.app.projectRoot ? <ProjectInitDialog open onSelectProject={forceUpdate} /> : <AppRoot />}
     </Provider>
   )
 }
 
 export function bootstrap(context: AppTypes.BootstrapContext) {
-  return ReactDOM.render(<App />, context.rootNode)
+  ;(window as any).reloadApp = () => {
+    return ReactDOM.render(
+      <App
+        key={Math.random()
+          .toString(36)
+          .slice(2)}
+      />,
+      context.rootNode
+    )
+  }
+  return (window as any).reloadApp()
 }

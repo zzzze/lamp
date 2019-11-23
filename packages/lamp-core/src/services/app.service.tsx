@@ -58,6 +58,10 @@ class AppService {
   public setProjectRoot(path: string) {
     this._store.dispatch({ type: SET_PROJECT_ROOT_REQUEST, payload: path })
   }
+
+  public getState() {
+    return this._store.getState()
+  }
 }
 
 export default new AppService(store)

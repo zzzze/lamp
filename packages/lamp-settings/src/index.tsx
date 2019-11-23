@@ -5,34 +5,18 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import SettingsIcon from '@material-ui/icons/Settings'
 import Typography from '@material-ui/core/Typography'
 import { constants } from '@lamp/shared'
+import SettingPage from 'components/Settings'
 
 const settingElement = document.createElement('div')
 settingElement.id = 'setting-page'
 
-const SettingPage = ({ appService }) => {
-  const handleClick = () => {
-    appService.setProjectRoot('xxx')
-  }
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 3000,
-        background: '#fff',
-      }}
-      onClick={handleClick}
-    >
-      setting page
-    </div>
-  )
+const renderSettingPage = appService => {
+  settingElement.style.display = 'block'
+  return ReactDOM.render(<SettingPage appService={appService} onClose={handleClose} />, settingElement)
 }
 
-const renderSettingPage = appService => {
-  return ReactDOM.render(<SettingPage appService={appService} />, settingElement)
+const handleClose = () => {
+  settingElement.style.display = 'none'
 }
 
 const providers = {
