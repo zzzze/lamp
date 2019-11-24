@@ -50,11 +50,12 @@ class Editor extends React.Component<EditorProps> {
       value,
       theme: (this.props as any).theme,
       previewTheme: (this.props as any).theme,
-      editorTheme: (this.props as any).theme === 'dark' ? 'paraiso-dark' : 'paraiso-light',
+      editorTheme: (this.props as any).theme === 'dark' ? 'pastel-on-dark' : 'base16-light',
       path: path.join(__dirname, '../../node_modules/editor.md/lib/'),
       pluginPath: __webpack_public_path__ + 'public/plugins/', // eslint-disable-line
       onchange: () => onChange && onChange(this.mditor ? this.mditor.getMarkdown() : ''),
       autoLoadModules: false,
+      // watch: false,
       onload: function() {
         console.log('onloaded =>', this, this.id, this.settings)
       },
