@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Hexo from 'hexo'
 import { Store } from 'redux'
-import { ADD_TOOLBAR_BUTTON_GENERATOR, SET_PROJECT_ROOT_REQUEST } from 'redux/types/app.type'
+import { ADD_TOOLBAR_BUTTON_GENERATOR, SET_PROJECT_ROOT_REQUEST, SET_THEME } from 'redux/types/app.type'
 import { constants } from '@lamp/shared'
 import { EditorProps } from '@lamp/shared/types/editor'
 import store from 'redux/store'
@@ -101,6 +101,10 @@ class AppService {
       await (previewServer as any).close()
       previewServer = null
     }
+  }
+
+  public setTheme(theme: string) {
+    this._store.dispatch({ type: SET_THEME, payload: theme })
   }
 }
 

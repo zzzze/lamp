@@ -4,6 +4,8 @@ import * as path from 'path'
 import 'editor.md/lib/codemirror/lib/codemirror.css'
 import 'editor.md/lib/codemirror/addon/dialog/dialog.css'
 import 'editor.md/lib/codemirror/addon/search/matchesonscrollbar.css'
+import 'editor.md/lib/codemirror/theme/pastel-on-dark.css'
+import 'editor.md/lib/codemirror/theme/base16-light.css'
 import 'editor.md/lib/codemirror/lib/codemirror.js'
 import 'editor.md/lib/codemirror/addons.min.js'
 import 'editor.md/lib/codemirror/modes.min.js'
@@ -46,15 +48,18 @@ class Editor extends React.Component<EditorProps> {
     const { value, onChange } = this.props
     this.mditor = editormd('editor-wrapper', {
       value,
+      theme: (this.props as any).theme,
+      previewTheme: (this.props as any).theme,
+      editorTheme: (this.props as any).theme === 'dark' ? 'paraiso-dark' : 'paraiso-light',
       path: path.join(__dirname, '../../node_modules/editor.md/lib/'),
       pluginPath: __webpack_public_path__ + 'public/plugins/', // eslint-disable-line
-      onchange: () =>
-        onChange && onChange(this.mditor ? this.mditor.getMarkdown() : ''),
+      onchange: () => onChange && onChange(this.mditor ? this.mditor.getMarkdown() : ''),
       autoLoadModules: false,
       onload: function() {
         console.log('onloaded =>', this, this.id, this.settings)
       },
     })
+    ;(window as any).mditor = this.mditor
     this.$menuContainer = (global as any).$('.editormd-menu')
     this.customBtnContainer.className = 'editormd-menu custom-btn-container'
     this.$menuContainer.append(this.customBtnContainer)
@@ -63,6 +68,11 @@ class Editor extends React.Component<EditorProps> {
   componentDidUpdate(prevProps: EditorProps) {
     if (prevProps.value !== this.props.value) {
       this.mditor.setMarkdown(this.props.value)
+    }
+    if (this.props.theme !== prevProps.theme) {
+      this.mditor.setTheme(this.props.theme)
+      this.mditor.setPreviewTheme(this.props.theme)
+      this.mditor.setCodeMirrorTheme((this.props as any).theme === 'dark' ? 'pastel-on-dark' : 'base16-light')
     }
   }
 

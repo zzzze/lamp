@@ -1,7 +1,7 @@
 import * as React from 'react'
 import appService from 'services/app.service'
 import Grid from '@material-ui/core/Grid'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles'
 import Tabbar from 'components/Tabbar'
 import Sidebar from 'components/Sidebar'
 import { IArticle } from 'hexoApi/types'
@@ -15,7 +15,8 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       padding: theme.spacing(0),
       height: '100vh',
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: theme.palette.background.default,
+      color: theme.palette.text.primary,
     },
     mainContainer: {
       flex: 1,
@@ -33,6 +34,7 @@ const AppRoot: React.FC = () => {
   const classes = useStyles()
   const Editor = appService.getEditor()
   const [selectedPost, setSelectedPost] = React.useState<Partial<IArticle>>({})
+  const theme = useTheme()
   const articleData = useSelector((state: any) => ({
     posts: state.hexo.posts,
     drafts: state.hexo.drafts,
@@ -62,7 +64,6 @@ const AppRoot: React.FC = () => {
       ...selectedPost,
       _content: content,
     }
-    console.log(postData)
     dispatch({ type: UPDATE_ARTICLE, payload: postData })
   }
 
@@ -77,7 +78,7 @@ const AppRoot: React.FC = () => {
           onSelectedPostTypeChange={handleSelectedPostTypeChange}
         />
         <Grid item className={classes.content}>
-          <Editor value={(post && post._content) || ''} onSave={handleSave} />
+          <Editor value={(post && post._content) || ''} onSave={handleSave} theme={theme.palette.type} />
         </Grid>
       </Grid>
     </Grid>

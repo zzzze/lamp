@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
     sidebar: {
       width: 200,
       height: '100%',
-      borderRightColor: theme.palette.grey[300],
+      borderRightColor: theme.palette.divider,
       borderRightStyle: 'solid',
       borderRightWidth: 1,
       overflow: 'hidden',
@@ -25,14 +25,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: 1,
       overflowY: 'scroll',
     },
-    actionButtons: {
-      paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
-    },
     nav: {
-      borderTopColor: theme.palette.grey[300],
+      borderTopColor: theme.palette.divider,
       borderTopStyle: 'solid',
       borderTopWidth: 1,
     },
@@ -71,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPos
 
   return (
     <Grid container direction="column" item className={classes.sidebar}>
-      <Grid item className={classes.actionButtons}>
+      <Grid item>
         <SidebarActionButtons />
       </Grid>
       <Grid item className={classes.content}>

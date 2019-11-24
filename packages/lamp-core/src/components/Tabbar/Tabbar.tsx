@@ -12,6 +12,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import VisibilityIcon from '@material-ui/icons/Visibility'
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
 import Snackbar from '@material-ui/core/Snackbar'
+import Switch from '@material-ui/core/Switch'
 import ServiceContext from 'services/service.context'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     tabBar: {
       height: theme.spacing(5),
       '-webkit-app-region': 'drag',
-      borderBottomColor: theme.palette.grey[300],
+      borderBottomColor: theme.palette.divider,
       borderBottomStyle: 'solid',
       borderBottomWidth: 1,
     },
@@ -41,6 +42,7 @@ let isDeploying = false
 const Tabbar: React.FC = () => {
   const classes = useStyles()
   const tabs = useSelector((state: any) => state.app.tabs)
+  const theme = useSelector((state: any) => state.app.theme)
   const service = React.useContext(ServiceContext)
   const [state, setState] = React.useState({
     open: false,
@@ -96,6 +98,9 @@ const Tabbar: React.FC = () => {
   }
 
   const menuButtonRenderers = service.appService.getMenuItemRenderers()
+  const handleChangeTheme = () => {
+    service.appService.setTheme(theme === 'dark' ? 'light' : 'dark')
+  }
 
   return (
     <Grid container item className={classes.tabBar}>
@@ -126,6 +131,14 @@ const Tabbar: React.FC = () => {
             },
           }}
         >
+          <MenuItem>
+            <Typography variant="inherit">黑暗模式</Typography>
+            <Switch
+              checked={theme === 'dark'}
+              onChange={handleChangeTheme}
+              inputProps={{ 'aria-label': 'secondary checkbox' }}
+            />
+          </MenuItem>
           <MenuItem onClick={handleDeploy}>
             <ListItemIcon className={classes.menuItemIcon}>
               <PublishIcon fontSize="small" />

@@ -16,6 +16,12 @@ import { useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
+    buttonGroup: {
+      borderRadius: 0,
+      '& button': {
+        borderRadius: 0,
+      },
+    },
     more: {
       width: 'auto',
     },
@@ -55,7 +61,14 @@ export default function SplitButton() {
 
   return (
     <>
-      <ButtonGroup variant="contained" color="primary" fullWidth ref={anchorRef} aria-label="split button">
+      <ButtonGroup
+        className={classes.buttonGroup}
+        variant="contained"
+        color="primary"
+        fullWidth
+        ref={anchorRef}
+        aria-label="split button"
+      >
         <Button onClick={handleAddItemClick}>
           <AddIcon /> 新建
         </Button>
