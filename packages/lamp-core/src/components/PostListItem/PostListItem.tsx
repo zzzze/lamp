@@ -19,22 +19,41 @@ import { ARTICLE_TYPE } from 'utils/constants'
 import { useDispatch } from 'react-redux'
 import { PUBLISH_ARTICLE_REQUEST, WITHDRAW_ARTICLE } from 'redux/types/hexo.type'
 
-const useStyles = makeStyles((_theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
       width: 200,
       '& .action-custom': {
         right: 0,
       },
+      '& $selected ~ .action-custom': {
+        color: theme.palette.primary.contrastText,
+      },
       '&:hover .action-custom': {
         display: 'block',
-        color: 'red',
+      },
+      '&:hover $selected ~ .action-custom': {
+        color: theme.palette.primary.contrastText,
       },
       '& .MuiListItem-secondaryAction': {
-        paddingRight: '16px',
+        paddingRight: theme.spacing(2),
       },
       '&:hover .MuiListItem-secondaryAction': {
-        paddingRight: '48px',
+        paddingRight: theme.spacing(6),
+      },
+      '& $selected ~ .action-custom button': {
+        color: 'unset !important',
+      },
+      '&:hover $selected ~ .action-custom button': {
+        color: 'unset !important',
+      },
+    },
+    selected: {
+      backgroundColor: `${theme.palette.primary.light} !important`,
+      color: theme.palette.primary.contrastText,
+      '&:hover': {
+        backgroundColor: `${theme.palette.primary.light} !important`,
+        color: theme.palette.primary.contrastText,
       },
     },
   })
@@ -104,7 +123,7 @@ const PostListItem: React.FC<PostListItemProps> = ({
 
   return (
     <Tooltip title={data.title}>
-      <ListItem classes={classes} selected={selectedId === data._id} divider onClick={() => onSelectPost(data)}>
+      <ListItem classes={classes} selected={selectedId === data._id} onClick={() => onSelectPost(data)}>
         <ListItemText className={actionClasses.text} primary={data.title} />
         <ListItemSecondaryAction className={actionClasses.action + ' action-custom'}>
           <IconButton aria-label="more" aria-controls="long-menu" aria-haspopup="true" onClick={handleClick}>

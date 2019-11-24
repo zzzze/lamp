@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
     tabBar: {
       height: theme.spacing(5),
       '-webkit-app-region': 'drag',
+      borderBottomColor: theme.palette.grey[300],
+      borderBottomStyle: 'solid',
+      borderBottomWidth: 1,
     },
     tabs: {
       flex: 1,

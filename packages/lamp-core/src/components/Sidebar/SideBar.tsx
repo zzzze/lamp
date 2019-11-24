@@ -16,17 +16,26 @@ const useStyles = makeStyles((theme: Theme) =>
     sidebar: {
       width: 200,
       height: '100%',
+      borderRightColor: theme.palette.grey[300],
+      borderRightStyle: 'solid',
+      borderRightWidth: 1,
+      overflow: 'hidden',
     },
     content: {
       flex: 1,
       overflowY: 'scroll',
     },
     actionButtons: {
-      padding: theme.spacing(1),
-      paddingTop: 0,
-      paddingBottom: 0,
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
     },
-    nav: {},
+    nav: {
+      borderTopColor: theme.palette.grey[300],
+      borderTopStyle: 'solid',
+      borderTopWidth: 1,
+    },
   })
 )
 
