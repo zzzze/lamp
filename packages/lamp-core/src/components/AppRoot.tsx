@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
     container: {
       padding: theme.spacing(0),
       height: '100vh',
+      backgroundColor: theme.palette.background.paper,
     },
     mainContainer: {
       flex: 1,
@@ -66,22 +67,20 @@ const AppRoot: React.FC = () => {
   }
 
   return (
-    <div>
-      <Grid container direction="column" spacing={0} className={classes.container}>
-        <Tabbar />
-        <Grid item container justify="center" spacing={0} className={classes.mainContainer}>
-          <Sidebar
-            selectedId={selectedPost._id || null}
-            onSelectPost={handleSelectPost}
-            selectedPostType={state.activeTabbarKey}
-            onSelectedPostTypeChange={handleSelectedPostTypeChange}
-          />
-          <Grid item className={classes.content}>
-            <Editor value={(post && post._content) || ''} onSave={handleSave} />
-          </Grid>
+    <Grid container direction="column" spacing={0} className={classes.container}>
+      <Tabbar />
+      <Grid item container justify="center" spacing={0} className={classes.mainContainer}>
+        <Sidebar
+          selectedId={selectedPost._id || null}
+          onSelectPost={handleSelectPost}
+          selectedPostType={state.activeTabbarKey}
+          onSelectedPostTypeChange={handleSelectedPostTypeChange}
+        />
+        <Grid item className={classes.content}>
+          <Editor value={(post && post._content) || ''} onSave={handleSave} />
         </Grid>
       </Grid>
-    </div>
+    </Grid>
   )
 }
 export default AppRoot

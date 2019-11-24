@@ -6,7 +6,11 @@ const defaultOptions = {
   draft: true,
   silent: true,
 }
-export default async function hexoInit(path: string, options?: IHexoInitOptions): Promise<Hexo> {
+export default async function hexoInit(
+  path: string,
+  options?: IHexoInitOptions,
+  loadMode: boolean = false
+): Promise<Hexo> {
   options = {
     ...defaultOptions,
     ...(options || {}),
@@ -14,6 +18,10 @@ export default async function hexoInit(path: string, options?: IHexoInitOptions)
   const hexo = new (Hexo as any)(path, options)
   ;(hexo.env as any).blogPath = path
   await hexo.init()
-  await hexo.watch()
+  if (loadMode) {
+    await hexo.load()
+  } else {
+    await hexo.watch()
+  }
   return hexo
 }

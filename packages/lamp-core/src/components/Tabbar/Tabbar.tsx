@@ -9,6 +9,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import PublishIcon from '@material-ui/icons/Publish'
 import Typography from '@material-ui/core/Typography'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
+import VisibilityIcon from '@material-ui/icons/Visibility'
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
 import Snackbar from '@material-ui/core/Snackbar'
 import ServiceContext from 'services/service.context'
 
@@ -41,6 +43,7 @@ const Tabbar: React.FC = () => {
     open: false,
     message: 'test',
   })
+  const [isPreviewServerOn, setIsPreviewServerOn] = React.useState(false)
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
@@ -77,6 +80,18 @@ const Tabbar: React.FC = () => {
     isDeploying = false
   }
 
+  const handleStopPreview = async function() {
+    hidePopupMenu()
+    await service.appService.closePreviewWindow()
+    setIsPreviewServerOn(false)
+  }
+
+  const handlePreview = async function() {
+    hidePopupMenu()
+    await service.appService.showPreviewWindow()
+    setIsPreviewServerOn(true)
+  }
+
   const menuButtonRenderers = service.appService.getMenuItemRenderers()
 
   return (
@@ -108,12 +123,27 @@ const Tabbar: React.FC = () => {
             },
           }}
         >
-          <MenuItem key="settings" onClick={handleDeploy}>
+          <MenuItem onClick={handleDeploy}>
             <ListItemIcon className={classes.menuItemIcon}>
               <PublishIcon fontSize="small" />
             </ListItemIcon>
             <Typography variant="inherit">部署</Typography>
           </MenuItem>
+          {isPreviewServerOn ? (
+            <MenuItem onClick={handleStopPreview}>
+              <ListItemIcon className={classes.menuItemIcon}>
+                <VisibilityOffIcon fontSize="small" />
+              </ListItemIcon>
+              <Typography variant="inherit">停止本地预览</Typography>
+            </MenuItem>
+          ) : (
+            <MenuItem onClick={handlePreview}>
+              <ListItemIcon className={classes.menuItemIcon}>
+                <VisibilityIcon fontSize="small" />
+              </ListItemIcon>
+              <Typography variant="inherit">本地预览</Typography>
+            </MenuItem>
+          )}
           {menuButtonRenderers.map(render =>
             render({ classes, appService: service.appService, afterClick: hidePopupMenu })
           )}
@@ -121,7 +151,6 @@ const Tabbar: React.FC = () => {
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
           open={state.open}
-          // onClose={handleCloseSnackbar}
           ContentProps={{
             'aria-describedby': 'message-id',
           }}

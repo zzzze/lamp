@@ -8,6 +8,8 @@ import ProjectInitDialog from 'components/ProjectInitDialog'
 import useForceUpdate from 'hooks/useForceUpdate'
 import ServiceContext from 'services/service.context'
 import appService from 'services/app.service'
+import { ThemeProvider } from '@material-ui/core/styles'
+import theme from './theme'
 
 const App: React.FC = () => {
   const forceUpdate = useForceUpdate()
@@ -15,7 +17,9 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <ServiceContext.Provider value={{ appService }}>
-        {!state.app.projectRoot ? <ProjectInitDialog open onSelectProject={forceUpdate} /> : <AppRoot />}
+        <ThemeProvider theme={theme}>
+          {!state.app.projectRoot ? <ProjectInitDialog open onSelectProject={forceUpdate} /> : <AppRoot />}
+        </ThemeProvider>
       </ServiceContext.Provider>
     </Provider>
   )

@@ -10,11 +10,9 @@ let SetWindowCompositionAttribute: any
 let AccentState: any
 let DwmEnableBlurBehindWindow: any
 if (process.platform === 'win32') {
-  SetWindowCompositionAttribute = require('windows-swca')
-    .SetWindowCompositionAttribute
+  SetWindowCompositionAttribute = require('windows-swca').SetWindowCompositionAttribute
   AccentState = require('windows-swca').ACCENT_STATE
-  DwmEnableBlurBehindWindow = require('windows-blurbehind')
-    .DwmEnableBlurBehindWindow
+  DwmEnableBlurBehindWindow = require('windows-blurbehind').DwmEnableBlurBehindWindow
 }
 
 export interface WindowOptions {
@@ -76,13 +74,7 @@ export class Window {
         closestDisplay.bounds.y + closestDisplay.bounds.height,
       ]
 
-      if (
-        (left2 > right1 ||
-          right2 < left1 ||
-          top2 > bottom1 ||
-          bottom2 < top1) &&
-        !maximized
-      ) {
+      if ((left2 > right1 || right2 < left1 || top2 > bottom1 || bottom2 < top1) && !maximized) {
         bwOptions.x = closestDisplay.bounds.width / 2 - bwOptions.width / 2
         bwOptions.y = closestDisplay.bounds.height / 2 - bwOptions.height / 2
       }
@@ -104,10 +96,7 @@ export class Window {
     this.window.once('ready-to-show', () => {
       if (process.platform === 'darwin') {
         this.window.setVibrancy('dark')
-      } else if (
-        process.platform === 'win32' &&
-        (configData.appearance || {}).vibrancy
-      ) {
+      } else if (process.platform === 'win32' && (configData.appearance || {}).vibrancy) {
         this.setVibrancy(true)
       }
 
@@ -121,10 +110,9 @@ export class Window {
       }
     })
 
-    this.window.loadURL(
-      `file://${app.getAppPath()}/dist/index.html?${this.window.id}`,
-      { extraHeaders: 'pragma: no-cache\n' }
-    )
+    this.window.loadURL(`file://${app.getAppPath()}/dist/index.html?${this.window.id}`, {
+      extraHeaders: 'pragma: no-cache\n',
+    })
     if (process.platform !== 'darwin') {
       this.window.setMenu(null)
     }
@@ -148,20 +136,13 @@ export class Window {
       if (parseFloat(os.release()) >= 10) {
         let attribValue = AccentState.ACCENT_DISABLED
         if (enabled) {
-          if (
-            parseInt(os.release().split('.')[2]) >= 17063 &&
-            type === 'fluent'
-          ) {
+          if (parseInt(os.release().split('.')[2]) >= 17063 && type === 'fluent') {
             attribValue = AccentState.ACCENT_ENABLE_ACRYLICBLURBEHIND
           } else {
             attribValue = AccentState.ACCENT_ENABLE_BLURBEHIND
           }
         }
-        SetWindowCompositionAttribute(
-          this.window.getNativeWindowHandle(),
-          attribValue,
-          0x00000000
-        )
+        SetWindowCompositionAttribute(this.window.getNativeWindowHandle(), attribValue, 0x00000000)
       } else {
         DwmEnableBlurBehindWindow(this.window, enabled)
       }
@@ -209,12 +190,8 @@ export class Window {
       moveSubscription.unsubscribe()
     })
 
-    this.window.on('enter-full-screen', () =>
-      this.window.webContents.send('host:window-enter-full-screen')
-    )
-    this.window.on('leave-full-screen', () =>
-      this.window.webContents.send('host:window-leave-full-screen')
-    )
+    this.window.on('enter-full-screen', () => this.window.webContents.send('host:window-enter-full-screen'))
+    this.window.on('leave-full-screen', () => this.window.webContents.send('host:window-leave-full-screen'))
 
     this.window.on('close', event => {
       if (!this.closing) {

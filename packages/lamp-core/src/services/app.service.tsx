@@ -7,11 +7,15 @@ import { EditorProps } from '@lamp/shared/types/editor'
 import store from 'redux/store'
 import { hexoInit } from 'hexoApi'
 import fsExtra from 'fs-extra'
+import { remote, BrowserWindow } from 'electron'
 
 interface TraversalContext {
   callback: (plugin: any, index: number) => any
   providerName: constants.Provider
 }
+
+let previewServer = null
+let previewWin: BrowserWindow | null = null
 
 class AppService {
   private _store: Store
@@ -74,6 +78,29 @@ class AppService {
       draft: false,
     })
     await hexo.call('deploy', { _: ['g'] })
+  }
+
+  public async showPreviewWindow() {
+    const hexo: Hexo = await hexoInit(this._store.getState().app.projectRoot, {}, true)
+    if (!previewServer) {
+      previewServer = await hexo.call('server', { port: 4000 })
+    }
+    if (!previewWin || previewWin.isDestroyed()) {
+      previewWin = new remote.BrowserWindow({ width: 800, height: 600 })
+    } else {
+      previewWin.show()
+    }
+    previewWin.loadURL('http://localhost:4000')
+  }
+
+  public async closePreviewWindow() {
+    if (previewWin && !previewWin.isDestroyed()) {
+      previewWin.destroy()
+    }
+    if (previewServer) {
+      await (previewServer as any).close()
+      previewServer = null
+    }
   }
 }
 
