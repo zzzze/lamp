@@ -106,6 +106,10 @@ class AppService {
   public setTheme(theme: string) {
     this._store.dispatch({ type: SET_THEME, payload: theme })
   }
+
+  public getTheme() {
+    return this._store.getState().app.theme
+  }
 }
 
 export default new AppService(store)

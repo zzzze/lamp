@@ -9,16 +9,15 @@ import useForceUpdate from 'hooks/useForceUpdate'
 import ServiceContext from 'services/service.context'
 import appService from 'services/app.service'
 import { ThemeProvider } from '@material-ui/core/styles'
-import themeLight from './theme-light'
-import themeDark from './theme'
 
 const App: React.FC = () => {
   const forceUpdate = useForceUpdate()
   const state = store.getState()
-  const themeType = useSelector((state: any) => state.app.theme)
+  const theme = useSelector((state: any) => state.app.theme)
+
   return (
     <ServiceContext.Provider value={{ appService }}>
-      <ThemeProvider theme={themeType === 'dark' ? themeDark : themeLight}>
+      <ThemeProvider theme={theme}>
         {!state.app.projectRoot ? <ProjectInitDialog open onSelectProject={forceUpdate} /> : <AppRoot />}
       </ThemeProvider>
     </ServiceContext.Provider>

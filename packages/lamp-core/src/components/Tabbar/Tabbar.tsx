@@ -99,7 +99,7 @@ const Tabbar: React.FC = () => {
 
   const menuButtonRenderers = service.appService.getMenuItemRenderers()
   const handleChangeTheme = () => {
-    service.appService.setTheme(theme === 'dark' ? 'light' : 'dark')
+    service.appService.setTheme(theme.palette.type === 'dark' ? 'light' : 'dark')
   }
 
   return (
@@ -134,7 +134,7 @@ const Tabbar: React.FC = () => {
           <MenuItem>
             <Typography variant="inherit">黑暗模式</Typography>
             <Switch
-              checked={theme === 'dark'}
+              checked={theme.palette.type === 'dark'}
               onChange={handleChangeTheme}
               inputProps={{ 'aria-label': 'secondary checkbox' }}
             />

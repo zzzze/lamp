@@ -1,11 +1,15 @@
+import { remote } from 'electron'
 import { ADD_TOOLBAR_BUTTON_GENERATOR, SWITCH_ACTIVE_TABBAR_KEY, SET_PROJECT_ROOT, SET_THEME } from '../types/app.type'
-import ElectronStore from 'electron-store'
-import { ARTICLE_TYPE } from 'utils/constants'
+import { ARTICLE_TYPE } from '../../utils/constants'
+import { constants } from '@lamp/shared'
+import electronStore from '@lamp/shared/appStore'
+import themeLight from '@lamp/shared/themes/theme-light'
+import themeDark from '@lamp/shared/themes/theme-dark'
 
-const electronStore = new ElectronStore()
-
-enum StoreKey {
-  PROJECT_ROOT = 'PROJECT_ROOT',
+const { StoreKey } = constants
+const getTheme = (themeType: string) => {
+  themeType = themeType || electronStore.get(StoreKey.THEME)
+  return themeType === 'dark' ? themeDark : themeLight
 }
 
 const defaultState = {
@@ -15,10 +19,11 @@ const defaultState = {
     toolbarButton: [],
   },
   tabs: [],
-  theme: 'light',
+  theme: getTheme(electronStore.get(StoreKey.THEME) || 'light'),
 }
 
 export default function app(state = defaultState, action: any) {
+  const theme = getTheme(action.payload)
   switch (action.type) {
     case SWITCH_ACTIVE_TABBAR_KEY:
       return {
@@ -37,9 +42,11 @@ export default function app(state = defaultState, action: any) {
         projectRoot: action.payload,
       }
     case SET_THEME:
+      electronStore.set(StoreKey.THEME, action.payload)
+      remote.getCurrentWindow().setBackgroundColor(theme.palette.background.default)
       return {
         ...state,
-        theme: action.payload,
+        theme,
       }
     default:
       return state

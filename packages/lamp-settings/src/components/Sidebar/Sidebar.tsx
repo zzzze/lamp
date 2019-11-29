@@ -5,17 +5,17 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Typography from '@material-ui/core/Typography'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications';
+import SettingsApplicationsIcon from '@material-ui/icons/SettingsApplications'
 import MenuList from '@material-ui/core/MenuList'
 import MenuItem from '@material-ui/core/MenuItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
-import TuneIcon from '@material-ui/icons/Tune';
+import TuneIcon from '@material-ui/icons/Tune'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: 250,
-      borderRightColor: theme.palette.grey[400],
+      width: 200,
+      borderRightColor: theme.palette.divider,
       borderRightStyle: 'solid',
       borderRightWidth: 1,
     },
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const useStylesForPanel = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      borderBottomColor: theme.palette.grey[300],
+      borderBottomColor: theme.palette.divider,
       borderBottomStyle: 'solid',
       borderBottomWidth: 1,
       boxShadow: 'none',
@@ -68,7 +68,8 @@ const useStylesForDetails = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       padding: '0 10px',
-      borderTopColor: theme.palette.grey[100],
+      backgroundColor: theme.palette.background.default,
+      borderTopColor: theme.palette.divider,
       borderTopStyle: 'solid',
       borderTopWidth: 1,
     },

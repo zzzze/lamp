@@ -6,13 +6,19 @@ import SettingsIcon from '@material-ui/icons/Settings'
 import Typography from '@material-ui/core/Typography'
 import { constants } from '@lamp/shared'
 import SettingPage from 'components/Settings'
+import { ThemeProvider } from '@material-ui/core/styles'
 
 const settingElement = document.createElement('div')
 settingElement.id = 'setting-page'
 
 const renderSettingPage = appService => {
   settingElement.style.display = 'block'
-  return ReactDOM.render(<SettingPage appService={appService} onClose={handleClose} />, settingElement)
+  return ReactDOM.render(
+    <ThemeProvider theme={appService.getTheme()}>
+      <SettingPage appService={appService} onClose={handleClose} />
+    </ThemeProvider>,
+    settingElement
+  )
 }
 
 const handleClose = () => {

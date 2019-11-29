@@ -17,6 +17,7 @@ if (process.platform === 'win32') {
 
 export interface WindowOptions {
   hidden?: boolean
+  color?: string
 }
 
 export class Window {
@@ -35,6 +36,7 @@ export class Window {
     const configData = loadConfig()
 
     options = options || {}
+    console.log('options', options)
 
     this.windowConfig = new ElectronConfig({ name: 'window' })
     this.windowBounds = this.windowConfig.get('windowBoundaries')
@@ -51,7 +53,7 @@ export class Window {
       },
       frame: false,
       show: false,
-      backgroundColor: '#00000000',
+      backgroundColor: options.color || '#00000000',
     }
 
     if (this.windowBounds) {

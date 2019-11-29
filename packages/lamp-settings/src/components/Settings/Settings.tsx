@@ -18,14 +18,18 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 0,
       bottom: 0,
       zIndex: 3000,
-      background: '#fff',
+      backgroundColor: theme.palette.background.default,
     },
     titleBar: {
       height: 44,
-      lineHeight: '44px',
+      lineHeight: '43px',
       textAlign: 'center',
+      color: theme.palette.text.primary,
       fontFamily: theme.typography.fontFamily,
       fontSize: theme.typography.pxToRem(12),
+      borderBottomColor: theme.palette.divider,
+      borderBottomStyle: 'solid',
+      borderBottomWidth: 1,
     },
     container: {
       padding: theme.spacing(0),
@@ -73,18 +77,16 @@ const SettingPage = ({ appService, onClose }) => {
   return (
     <div className={classes.root}>
       <Grid container direction="column" spacing={0} className={classes.container}>
-        <Grid item container justify="center" spacing={0} className={classes.titleBar}>
-          <Grid item style={{ flex: 1 }}>
-            设置
-          </Grid>
-          <Grid item>
+        <Grid item className={classes.titleBar}>
+          <div>设置</div>
+          <div style={{ position: 'absolute', top: 0, right: 0 }}>
             <IconButton onClick={handleSave}>
               <SaveIcon fontSize="small" />
             </IconButton>
             <IconButton onClick={onClose}>
               <CancelIcon fontSize="small" />
             </IconButton>
-          </Grid>
+          </div>
         </Grid>
         <Grid item container justify="center" spacing={0} className={classes.mainContainer}>
           <Sidebar />
@@ -102,7 +104,7 @@ const SettingPage = ({ appService, onClose }) => {
                 variant="outlined"
                 style={{ flex: 1 }}
               />
-              <Button variant="contained" style={{ marginLeft: 10 }} onClick={handleSelectProject}>
+              <Button color="primary" variant="contained" style={{ marginLeft: 10 }} onClick={handleSelectProject}>
                 选择项目
               </Button>
             </div>

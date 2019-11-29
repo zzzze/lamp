@@ -4,8 +4,17 @@ import './global.scss'
 import './toastr.scss'
 import { getRootModule } from './app.module'
 import { findPlugins, loadPlugins, PluginInfo } from './plugins'
+import electronStore from '@lamp/shared/appStore'
+import themeLight from '@lamp/shared/themes/theme-light'
+import themeDark from '@lamp/shared/themes/theme-dark'
+import { constants } from '@lamp/shared'
 
-// Always land on the start view
+const { StoreKey } = constants
+const getTheme = () => {
+  const themeType = electronStore.get(StoreKey.THEME)
+  return themeType === 'dark' ? themeDark : themeLight
+}
+
 location.hash = ''
 ;(process as any).enablePromiseAPI = true
 
@@ -20,6 +29,7 @@ if (isDev) {
 }
 
 async function bootstrap(plugins: PluginInfo[], safeMode = false): Promise<any> {
+  ;(document.getElementsByTagName('loading').item(0) as any).style.background = getTheme().palette.background.default
   if (safeMode) {
     plugins = plugins.filter(x => x.isBuiltin)
   }
