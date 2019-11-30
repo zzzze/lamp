@@ -42,7 +42,8 @@ Object.assign(window, { builtinPluginsPath, userPluginsPath })
 ;(nodeModule as any).globalPaths.unshift(
   path.join(userPluginsPath, 'node_modules')
 )
-// nodeModule.globalPaths.unshift(path.join((process as any).resourcesPath, 'app.asar', 'node_modules'))
+;(nodeModule as any).globalPaths.unshift(path.join((process as any).resourcesPath, 'app'))
+;(nodeModule as any).globalPaths.unshift(path.join((process as any).resourcesPath, 'app.asar'))
 if (process.env.LAMP_PLUGINS) {
   process.env.LAMP_PLUGINS.split(':').map(x =>
     (nodeModule as any).globalPaths.push(normalizePath(x))
@@ -67,13 +68,14 @@ export interface PluginInfo {
 const builtinModules = [
   'react',
   'react-dom',
-  'rxjs',
-  'rxjs/operators',
-  'rxjs-compat/Subject',
+  // 'rxjs',
+  // 'rxjs/operators',
+  // 'rxjs-compat/Subject',
   '@material-ui/core',
   '@material-ui/icons',
   'lamp-core',
   'lamp-settings',
+  'lamp-editor',
 ]
 
 const cachedBuiltinModules = {}

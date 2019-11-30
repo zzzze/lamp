@@ -67,7 +67,7 @@ module.exports = {
     module: 'commonjs module',
     mz: 'commonjs mz',
     path: 'commonjs path',
-    rxjs: 'commonjs rxjs',
+    // rxjs: 'commonjs rxjs',
     react: 'commonjs react',
     'react-dom': 'commonjs react-dom',
   },

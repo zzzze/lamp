@@ -1,7 +1,7 @@
 import { Subject, Observable } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 import { BrowserWindow, app, ipcMain, Rectangle, screen } from 'electron'
-import * as ElectronConfig from 'electron-config'
+// import * as ElectronConfig from 'electron-config'
 import * as os from 'os'
 import { loadConfig } from './config'
 import addDevTools from './addDevTools'
@@ -18,15 +18,16 @@ if (process.platform === 'win32') {
 export interface WindowOptions {
   hidden?: boolean
   color?: string
+  icon?: string
 }
 
 export class Window {
   ready: Promise<void>
   private visible = new Subject<boolean>()
   private window: BrowserWindow
-  private windowConfig: ElectronConfig
+  // private windowConfig: ElectronConfig
   private windowBounds: Rectangle
-  private closing = false
+  // private closing = false
 
   get visible$(): Observable<boolean> {
     return this.visible
@@ -38,10 +39,11 @@ export class Window {
     options = options || {}
     console.log('options', options)
 
-    this.windowConfig = new ElectronConfig({ name: 'window' })
-    this.windowBounds = this.windowConfig.get('windowBoundaries')
+    // this.windowConfig = new ElectronConfig({ name: 'window' })
+    // this.windowBounds = this.windowConfig.get('windowBoundaries')
 
-    const maximized = this.windowConfig.get('maximized')
+    // const maximized = this.windowConfig.get('maximized')
+    const maximized = false
     const bwOptions: Electron.BrowserWindowConstructorOptions = {
       width: 800,
       height: 600,
@@ -195,14 +197,14 @@ export class Window {
     this.window.on('enter-full-screen', () => this.window.webContents.send('host:window-enter-full-screen'))
     this.window.on('leave-full-screen', () => this.window.webContents.send('host:window-leave-full-screen'))
 
-    this.window.on('close', event => {
-      if (!this.closing) {
-        event.preventDefault()
-        this.window.webContents.send('host:window-close-request')
-        return
-      }
-      this.windowConfig.set('windowBoundaries', this.windowBounds)
-      this.windowConfig.set('maximized', this.window.isMaximized())
+    this.window.on('close', _event => {
+      // if (!this.closing) {
+      //   event.preventDefault()
+      //   this.window.webContents.send('host:window-close-request')
+      //   return
+      // }
+      // this.windowConfig.set('windowBoundaries', this.windowBounds)
+      // this.windowConfig.set('maximized', this.window.isMaximized())
     })
 
     this.window.on('closed', () => {
@@ -303,7 +305,7 @@ export class Window {
       if (!this.window || event.sender !== this.window.webContents) {
         return
       }
-      this.closing = true
+      // this.closing = true
       this.window.close()
     })
 

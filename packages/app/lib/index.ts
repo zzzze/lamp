@@ -6,9 +6,11 @@ import { parseArgs } from './cli'
 import { Application } from './app'
 import themeLight from '@lamp/shared/themes/theme-light'
 import themeDark from '@lamp/shared/themes/theme-dark'
+import * as path from 'path'
 import electronDebug = require('electron-debug')
 
 const { StoreKey } = constants
+const icon = path.resolve(__dirname, '../assets/icon.icns')
 
 const getTheme = () => {
   const themeType = electronStore.get(StoreKey.THEME)
@@ -24,6 +26,7 @@ const application = new Application()
 ipcMain.on('app:new-window', () => {
   application.newWindow({
     color: getTheme().palette.background.default,
+    icon,
   })
 })
 
@@ -31,14 +34,18 @@ app.on('activate', () => {
   if (!application.hasWindows()) {
     application.newWindow({
       color: getTheme().palette.background.default,
+      icon,
     })
   } else {
     application.focus()
   }
 })
 
+
 app.on('window-all-closed', () => {
-  app.quit()
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
 })
 
 process.on('uncaughtException' as any, err => {
@@ -74,6 +81,7 @@ app.on('ready', () => {
           click() {
             this.app.newWindow({
               color: getTheme().palette.background.default,
+              icon,
             })
           },
         },
@@ -84,5 +92,6 @@ app.on('ready', () => {
   application.newWindow({
     hidden: argv.hidden,
     color: getTheme().palette.background.default,
+    icon,
   })
 })

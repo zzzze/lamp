@@ -96,7 +96,7 @@ export class Application {
   }
 
   hasWindows() {
-    return !!this.windows.length
+    return !!this.windows.filter(w => !w.isDestroyed()).length
   }
 
   focus() {
