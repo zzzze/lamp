@@ -5,6 +5,7 @@ import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import BookmarkIcon from '@material-ui/icons/Bookmark'
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import PostList from 'components/PostList'
 import { useSelector, useDispatch } from 'react-redux'
 import { IArticle } from 'hexoApi/types'
@@ -30,6 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
       borderTopStyle: 'solid',
       borderTopWidth: 1,
     },
+    progress: {
+      height: 2,
+    },
   })
 )
 
@@ -43,11 +47,17 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPostType, onSelectedPostTypeChange }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+  const [loading, setLoading] = React.useState(true)
   const state = useSelector((state: any) => ({
     posts: state.hexo.posts,
     drafts: state.hexo.drafts,
     data: state.hexo.data,
   }))
+  React.useEffect(() => {
+    if (state.posts.length || state.drafts.length) {
+      setLoading(false)
+    }
+  }, [state])
   const handleNavChange = (_event: any, newValue: ARTICLE_TYPE) => {
     return onSelectedPostTypeChange(newValue)
   }
@@ -77,6 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPos
         />
       </Grid>
       <Grid item className={classes.nav}>
+        {loading ? <LinearProgress variant="query" classes={{ root: classes.progress }} /> : null}
         <BottomNavigation value={selectedPostType} onChange={handleNavChange} showLabels>
           <BottomNavigationAction label="文章" value={ARTICLE_TYPE.POST} icon={<BookmarkIcon />} />
           <BottomNavigationAction label="草稿" value={ARTICLE_TYPE.DRAFT} icon={<BookmarkBorderIcon />} />
