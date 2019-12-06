@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.default.json",
   "exclude": ["node_modules", "src/hexo", "dist", "tests"],
+  "typeRoots": ["types"],
   "compilerOptions": {
     "baseUrl": "src"
   }

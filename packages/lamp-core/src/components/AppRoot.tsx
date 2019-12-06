@@ -9,6 +9,9 @@ import { ARTICLE_TYPE } from 'utils/constants'
 import { UPDATE_ARTICLE } from 'redux/types/hexo.type'
 import { useSelector, useDispatch } from 'react-redux'
 import { SWITCH_ACTIVE_TABBAR_REQUEST } from 'redux/types/app.type'
+// import logo from 'assets/test'
+// import * as logo from 'assets/logo-01.png'
+// const logo = require('assets/logo-01.png')
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,6 +28,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flex: 1,
+      position: 'relative',
+    },
+    logo: {
+      width: 300,
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+      filter: 'grayscale(1)',
+      mixBlendMode: 'multiply',
     },
   })
 )
@@ -78,7 +91,11 @@ const AppRoot: React.FC = () => {
           onSelectedPostTypeChange={handleSelectedPostTypeChange}
         />
         <Grid item className={classes.content}>
-          <Editor value={(post && post._content) || ''} onSave={handleSave} theme={theme.palette.type} />
+          {post ? (
+            <Editor value={(post && post._content) || ''} onSave={handleSave} theme={theme.palette.type} />
+          ) : (
+            <img className={classes.logo} src="../assets/logo-01.png" />
+          )}
         </Grid>
       </Grid>
     </Grid>

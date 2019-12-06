@@ -1,5 +1,5 @@
 import { put, select } from 'redux-saga/effects'
-import { FETCH_ARTICLE_DATA } from 'redux/types/hexo.type'
+import { FETCH_ARTICLE_DATA, FETCHING_ARTICLE } from 'redux/types/hexo.type'
 import { SWITCH_ACTIVE_TABBAR_KEY } from 'redux/types/app.type'
 import { ARTICLE_TYPE } from 'utils/constants'
 import {
@@ -22,6 +22,7 @@ interface FetchArticleDataActionType {
 }
 
 export function* fetchArticleData(action: FetchArticleDataActionType) {
+  yield put({ type: FETCHING_ARTICLE, payload: true })
   if (!hexo || (action.payload && action.payload.refresh)) {
     const projectRoot = yield select(state => state.app.projectRoot)
     hexo = yield hexoInit(projectRoot)
@@ -31,6 +32,7 @@ export function* fetchArticleData(action: FetchArticleDataActionType) {
 }
 
 export function* publishArticle(action: any) {
+  yield put({ type: FETCHING_ARTICLE, payload: true })
   if (!hexo) {
     hexo = yield hexoInit('/Users/zero/projects/blog/')
   }
@@ -39,6 +41,7 @@ export function* publishArticle(action: any) {
 }
 
 export function* withDrawArticle(action: any) {
+  yield put({ type: FETCHING_ARTICLE, payload: true })
   if (!hexo) {
     hexo = yield hexoInit('/Users/zero/projects/blog/')
   }
@@ -47,6 +50,7 @@ export function* withDrawArticle(action: any) {
 }
 
 export function* createArticle(action: any) {
+  yield put({ type: FETCHING_ARTICLE, payload: true })
   if (!hexo) {
     hexo = yield hexoInit('/Users/zero/projects/blog/')
   }
@@ -56,6 +60,7 @@ export function* createArticle(action: any) {
 }
 
 export function* updateArticle(action: any) {
+  yield put({ type: FETCHING_ARTICLE, payload: true })
   if (!hexo) {
     hexo = yield hexoInit('/Users/zero/projects/blog/')
   }

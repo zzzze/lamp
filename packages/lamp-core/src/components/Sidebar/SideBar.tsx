@@ -47,17 +47,12 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPostType, onSelectedPostTypeChange }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const [loading, setLoading] = React.useState(true)
   const state = useSelector((state: any) => ({
     posts: state.hexo.posts,
     drafts: state.hexo.drafts,
     data: state.hexo.data,
+    loading: state.hexo.loading,
   }))
-  React.useEffect(() => {
-    if (state.posts.length || state.drafts.length) {
-      setLoading(false)
-    }
-  }, [state])
   const handleNavChange = (_event: any, newValue: ARTICLE_TYPE) => {
     return onSelectedPostTypeChange(newValue)
   }
@@ -87,7 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPos
         />
       </Grid>
       <Grid item className={classes.nav}>
-        {loading ? <LinearProgress variant="query" classes={{ root: classes.progress }} /> : null}
+        {state.loading ? <LinearProgress variant="query" classes={{ root: classes.progress }} /> : null}
         <BottomNavigation value={selectedPostType} onChange={handleNavChange} showLabels>
           <BottomNavigationAction label="文章" value={ARTICLE_TYPE.POST} icon={<BookmarkIcon />} />
           <BottomNavigationAction label="草稿" value={ARTICLE_TYPE.DRAFT} icon={<BookmarkBorderIcon />} />

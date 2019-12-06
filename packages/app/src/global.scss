@@ -2,10 +2,12 @@ body {
   margin: 0;
   min-height: 100vh;
   overflow: hidden;
-  // background: #1D272D;
+  user-select: none;
 }
 
-.modal-dialog, .modal-backdrop, .no-drag {
+.modal-dialog,
+.modal-backdrop,
+.no-drag {
   -webkit-app-region: no-drag;
 }
 
@@ -13,7 +15,7 @@ body {
   user-select: text;
 }
 
-[ngbradiogroup] input[type="radio"] {
+[ngbradiogroup] input[type='radio'] {
   display: none;
 }
 
@@ -34,20 +36,22 @@ body {
   .header {
     margin-right: auto;
 
-    .title {}
+    .title {
+    }
 
     .description {
       font-size: 13px;
-      opacity: .5;
+      opacity: 0.5;
     }
   }
 
-  & > .form-control, & > .input-group {
+  & > .form-control,
+  & > .input-group {
     width: 33%;
   }
 }
 
-input[type=range] {
+input[type='range'] {
   -webkit-appearance: none;
   background: transparent;
   outline: none;

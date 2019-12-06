@@ -80,6 +80,7 @@ const useStylesForMenuList = makeStyles((_theme: Theme) =>
   createStyles({
     root: {
       width: '100%',
+      outline: 'none',
     },
     padding: {},
   })
@@ -107,7 +108,7 @@ const Sidebar = () => {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails classes={classesForDetails}>
           <MenuList classes={classesForMenuList}>
-            <MenuItem>
+            <MenuItem disabled>
               <ListItemIcon>
                 <SettingsApplicationsIcon fontSize="small" />
               </ListItemIcon>
@@ -129,7 +130,7 @@ const Sidebar = () => {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails classes={classesForDetails}>
           <MenuList classes={classesForMenuList}>
-            <MenuItem>
+            <MenuItem disabled>
               <ListItemIcon>
                 <TuneIcon fontSize="small" />
               </ListItemIcon>

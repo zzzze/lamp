@@ -19,10 +19,8 @@ module.exports = {
     devtoolModuleFilenameTemplate: 'webpack-lamp-core:///[resource-path]',
   },
   resolve: {
-    modules: ['src/', 'node_modules', '../../node_modules', 'assets/'].map(x =>
-      path.join(__dirname, x)
-    ),
-    extensions: ['.ts', '.tsx', '.js'],
+    modules: ['src/', 'node_modules', '../../node_modules'].map(x => path.join(__dirname, x)),
+    extensions: ['.ts', '.tsx', '.js', 'png'],
   },
   module: {
     rules: [
@@ -60,15 +58,6 @@ module.exports = {
       },
     ],
   },
-  externals: [
-    'electron',
-    'fs',
-    'os',
-    'path',
-    'hexo',
-    /^rxjs/,
-    /^react/,
-    /^@material-ui/,
-  ],
+  externals: ['electron', 'fs', 'os', 'path', 'hexo', /^rxjs/, /^react/, /^@material-ui/],
   plugins: [new webpack.optimize.ModuleConcatenationPlugin()],
 }

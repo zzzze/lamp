@@ -1,4 +1,4 @@
-import { FETCH_ARTICLE_DATA } from 'redux/types/hexo.type'
+import { FETCH_ARTICLE_DATA, FETCHING_ARTICLE } from 'redux/types/hexo.type'
 import { DeepReadonly } from 'utility-types'
 
 interface ArticleData {
@@ -9,12 +9,14 @@ export type HexoState = DeepReadonly<{
   posts: (keyof ArticleData)[]
   drafts: (keyof ArticleData)[]
   data: ArticleData
+  loading: boolean
 }>
 
 const defaultState: HexoState = {
   posts: [],
   drafts: [],
   data: {},
+  loading: true,
 }
 
 export default function hexo(state = defaultState, action: any) {
@@ -23,6 +25,12 @@ export default function hexo(state = defaultState, action: any) {
       return {
         ...state,
         ...action.payload,
+        loading: false,
+      }
+    case FETCHING_ARTICLE:
+      return {
+        ...state,
+        loading: action.payload,
       }
     default:
       return state

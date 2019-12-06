@@ -57,6 +57,7 @@ export default function SplitButton() {
 
   const handleRefresh = () => {
     dispatch({ type: 'FETCH_REQUESTED', payload: { refresh: true } })
+    setOpen(false)
   }
 
   return (
