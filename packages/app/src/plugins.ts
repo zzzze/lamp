@@ -1,4 +1,4 @@
-import * as fs from 'mz/fs'
+import * as fs from 'fs-extra'
 import * as path from 'path'
 import { AppTypes } from '@lamp/shared'
 import nodeModule = require('module')
@@ -98,11 +98,11 @@ export async function findPlugins(): Promise<PluginInfo[]> {
 
   for (let pluginDir of paths) {
     pluginDir = normalizePath(pluginDir)
-    if (!(await fs.exists(pluginDir))) {
+    if (!(fs.existsSync(pluginDir))) {
       continue
     }
     const pluginNames = await fs.readdir(pluginDir)
-    if (await fs.exists(path.join(pluginDir, 'package.json'))) {
+    if (fs.existsSync(path.join(pluginDir, 'package.json'))) {
       candidateLocations.push({
         pluginDir: path.dirname(pluginDir),
         packageName: path.basename(pluginDir),
@@ -118,7 +118,7 @@ export async function findPlugins(): Promise<PluginInfo[]> {
   for (const { pluginDir, packageName } of candidateLocations) {
     const pluginPath = path.join(pluginDir, packageName)
     const infoPath = path.join(pluginPath, 'package.json')
-    if (!(await fs.exists(infoPath))) {
+    if (!(fs.existsSync(infoPath))) {
       continue
     }
 
