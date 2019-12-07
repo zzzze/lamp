@@ -1,6 +1,6 @@
-import { put, select } from 'redux-saga/effects'
+import { put, select, delay } from 'redux-saga/effects'
 import { FETCH_ARTICLE_DATA, FETCHING_ARTICLE } from 'redux/types/hexo.type'
-import { SWITCH_ACTIVE_TABBAR_KEY } from 'redux/types/app.type'
+import { SWITCH_ACTIVE_TABBAR_KEY, TOGGLE_SNACKBAR } from 'redux/types/app.type'
 import { ARTICLE_TYPE } from 'utils/constants'
 import {
   hexoInit,
@@ -21,49 +21,53 @@ interface FetchArticleDataActionType {
   }
 }
 
-export function* fetchArticleData(action: FetchArticleDataActionType) {
-  yield put({ type: FETCHING_ARTICLE, payload: true })
-  if (!hexo || (action.payload && action.payload.refresh)) {
+function* hexoInitTask() {
+  if (!hexo) {
     const projectRoot = yield select(state => state.app.projectRoot)
     hexo = yield hexoInit(projectRoot)
   }
-  const articleData = yield getArticleData(hexo as any)
+}
+
+function* getArticleDataTask(action?: () => void) {
+  yield put({ type: FETCHING_ARTICLE, payload: true })
+  yield hexoInitTask()
+  const articleData = !action ? yield getArticleData(hexo as any) : yield action()
   yield put({ type: FETCH_ARTICLE_DATA, payload: articleData })
+  yield put({ type: FETCHING_ARTICLE, payload: false })
+}
+
+export function* fetchArticleData(action: FetchArticleDataActionType) {
+  if (action.payload && action.payload.refresh) {
+    hexo = null
+  }
+  yield getArticleDataTask()
 }
 
 export function* publishArticle(action: any) {
-  yield put({ type: FETCHING_ARTICLE, payload: true })
-  if (!hexo) {
-    hexo = yield hexoInit('/Users/zero/projects/blog/')
-  }
-  const articleData = yield withGetArticleData(hexoPublishArticle)(hexo as any, action.payload)
-  yield put({ type: FETCH_ARTICLE_DATA, payload: articleData })
+  yield getArticleDataTask(function*() {
+    return yield withGetArticleData(hexoPublishArticle)(hexo as any, action.payload)
+  })
 }
 
 export function* withDrawArticle(action: any) {
-  yield put({ type: FETCHING_ARTICLE, payload: true })
-  if (!hexo) {
-    hexo = yield hexoInit('/Users/zero/projects/blog/')
-  }
-  const articleData = yield withGetArticleData(hexoWithdrawArticle)(hexo as any, action.payload)
-  yield put({ type: FETCH_ARTICLE_DATA, payload: articleData })
+  yield getArticleDataTask(function*() {
+    return yield withGetArticleData(hexoWithdrawArticle)(hexo as any, action.payload)
+  })
 }
 
 export function* createArticle(action: any) {
-  yield put({ type: FETCHING_ARTICLE, payload: true })
-  if (!hexo) {
-    hexo = yield hexoInit('/Users/zero/projects/blog/')
-  }
-  const articleData = yield withGetArticleData(hexoCreateArticle)(hexo as any, action.payload)
-  yield put({ type: FETCH_ARTICLE_DATA, payload: articleData })
+  yield getArticleDataTask(function*() {
+    return yield withGetArticleData(hexoCreateArticle)(hexo as any, action.payload)
+  })
   yield put({ type: SWITCH_ACTIVE_TABBAR_KEY, payload: ARTICLE_TYPE.DRAFT })
 }
 
 export function* updateArticle(action: any) {
-  yield put({ type: FETCHING_ARTICLE, payload: true })
-  if (!hexo) {
-    hexo = yield hexoInit('/Users/zero/projects/blog/')
-  }
-  const articleData = yield withGetArticleData(hexoUpdateArticle)(hexo as any, action.payload)
-  yield put({ type: FETCH_ARTICLE_DATA, payload: articleData })
+  yield put({ type: TOGGLE_SNACKBAR, payload: { open: true, message: '正在更新文章' } })
+  yield getArticleDataTask(function*() {
+    return yield withGetArticleData(hexoUpdateArticle)(hexo as any, action.payload)
+  })
+  yield put({ type: TOGGLE_SNACKBAR, payload: { open: true, message: '文章更新成功' } })
+  yield delay(1000)
+  yield put({ type: TOGGLE_SNACKBAR, payload: { open: false, message: '' } })
 }

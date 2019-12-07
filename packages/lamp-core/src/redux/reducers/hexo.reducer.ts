@@ -25,7 +25,6 @@ export default function hexo(state = defaultState, action: any) {
       return {
         ...state,
         ...action.payload,
-        loading: false,
       }
     case FETCHING_ARTICLE:
       return {

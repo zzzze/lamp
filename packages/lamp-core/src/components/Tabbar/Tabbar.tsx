@@ -11,7 +11,6 @@ import Typography from '@material-ui/core/Typography'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import VisibilityIcon from '@material-ui/icons/Visibility'
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff'
-import Snackbar from '@material-ui/core/Snackbar'
 import Switch from '@material-ui/core/Switch'
 import ServiceContext from 'services/service.context'
 
@@ -41,13 +40,8 @@ let isDeploying = false
 
 const Tabbar: React.FC = () => {
   const classes = useStyles()
-  const tabs = useSelector((state: any) => state.app.tabs)
   const theme = useSelector((state: any) => state.app.theme)
   const service = React.useContext(ServiceContext)
-  const [state, setState] = React.useState({
-    open: false,
-    message: 'test',
-  })
   const [isPreviewServerOn, setIsPreviewServerOn] = React.useState(false)
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -64,24 +58,8 @@ const Tabbar: React.FC = () => {
   const handleDeploy = async function() {
     if (isDeploying) return
     isDeploying = true
-    setState({
-      open: true,
-      message: '部署中...',
-    })
     hidePopupMenu()
     await service.appService.hexoDeploy()
-    setState({
-      open: true,
-      message: '部署成功！',
-    })
-    setTimeout(
-      () =>
-        setState({
-          open: false,
-          message: '',
-        }),
-      1000
-    )
     isDeploying = false
   }
 
@@ -104,11 +82,7 @@ const Tabbar: React.FC = () => {
 
   return (
     <Grid container item className={classes.tabBar}>
-      <Grid item className={classes.tabs}>
-        {tabs.map((tab: any) => (
-          <div key={tab.name}>{tab.name}</div>
-        ))}
-      </Grid>
+      <div className={classes.tabs} />
       <Grid item className={classes.menu}>
         <IconButton
           aria-label="more"
@@ -164,14 +138,6 @@ const Tabbar: React.FC = () => {
             render({ classes, appService: service.appService, afterClick: hidePopupMenu })
           )}
         </Menu>
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={state.open}
-          ContentProps={{
-            'aria-describedby': 'message-id',
-          }}
-          message={state.message}
-        />
       </Grid>
     </Grid>
   )

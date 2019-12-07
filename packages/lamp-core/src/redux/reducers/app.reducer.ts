@@ -1,5 +1,5 @@
 import { remote } from 'electron'
-import { ADD_TOOLBAR_BUTTON_GENERATOR, SWITCH_ACTIVE_TABBAR_KEY, SET_PROJECT_ROOT, SET_THEME } from '../types/app.type'
+import { SWITCH_ACTIVE_TABBAR_KEY, SET_PROJECT_ROOT, SET_THEME, TOGGLE_SNACKBAR } from '../types/app.type'
 import { ARTICLE_TYPE } from '../../utils/constants'
 import { constants } from '@lamp/shared'
 import electronStore from '@lamp/shared/appStore'
@@ -18,8 +18,11 @@ const defaultState = {
   generators: {
     toolbarButton: [],
   },
-  tabs: [],
   theme: getTheme(electronStore.get(StoreKey.THEME) || 'light'),
+  snackbar: {
+    open: false,
+    message: '',
+  },
 }
 
 export default function app(state = defaultState, action: any) {
@@ -29,11 +32,6 @@ export default function app(state = defaultState, action: any) {
       return {
         ...state,
         activeTabbarKey: action.payload,
-      }
-    case ADD_TOOLBAR_BUTTON_GENERATOR:
-      return {
-        ...state,
-        tabs: [...state.tabs, ...action.payload],
       }
     case SET_PROJECT_ROOT:
       electronStore.set(StoreKey.PROJECT_ROOT, action.payload)
@@ -47,6 +45,11 @@ export default function app(state = defaultState, action: any) {
       return {
         ...state,
         theme,
+      }
+    case TOGGLE_SNACKBAR:
+      return {
+        ...state,
+        snackbar: action.payload,
       }
     default:
       return state

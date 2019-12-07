@@ -1,13 +1,16 @@
 import * as React from 'react'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import Fade from '@material-ui/core/Fade'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import BookmarkIcon from '@material-ui/icons/Bookmark'
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import PostList from 'components/PostList'
-import { useSelector, useDispatch } from 'react-redux'
+import {
+  useSelector,
+} from 'react-redux'
 import { IArticle } from 'hexoApi/types'
 import { ARTICLE_TYPE } from 'utils/constants'
 import SidebarActionButtons from 'components/SidebarActionButtons'
@@ -27,11 +30,15 @@ const useStyles = makeStyles((theme: Theme) =>
       overflowY: 'scroll',
     },
     nav: {
+      position: 'relative',
       borderTopColor: theme.palette.divider,
       borderTopStyle: 'solid',
       borderTopWidth: 1,
     },
     progress: {
+      position: 'absolute',
+      bottom: '100%',
+      width: '100%',
       height: 2,
     },
   })
@@ -46,7 +53,6 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPostType, onSelectedPostTypeChange }) => {
   const classes = useStyles()
-  const dispatch = useDispatch()
   const state = useSelector((state: any) => ({
     posts: state.hexo.posts,
     drafts: state.hexo.drafts,
@@ -56,9 +62,6 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPos
   const handleNavChange = (_event: any, newValue: ARTICLE_TYPE) => {
     return onSelectedPostTypeChange(newValue)
   }
-  React.useEffect(() => {
-    dispatch({ type: 'FETCH_REQUESTED', payload: { refresh: true } })
-  }, [])
 
   const articleData: {
     postIds: string[]
@@ -82,7 +85,9 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedId, onSelectPost, selectedPos
         />
       </Grid>
       <Grid item className={classes.nav}>
-        {state.loading ? <LinearProgress variant="query" classes={{ root: classes.progress }} /> : null}
+        <Fade in={state.loading}>
+          <LinearProgress variant="query" classes={{ root: classes.progress }} />
+        </Fade>
         <BottomNavigation value={selectedPostType} onChange={handleNavChange} showLabels>
           <BottomNavigationAction label="文章" value={ARTICLE_TYPE.POST} icon={<BookmarkIcon />} />
           <BottomNavigationAction label="草稿" value={ARTICLE_TYPE.DRAFT} icon={<BookmarkBorderIcon />} />

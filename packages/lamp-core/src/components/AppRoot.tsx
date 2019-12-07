@@ -1,5 +1,6 @@
 import * as React from 'react'
 import appService from 'services/app.service'
+import hexoService from 'services/hexo.service'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles'
 import Tabbar from 'components/Tabbar'
@@ -8,7 +9,9 @@ import { IArticle } from 'hexoApi/types'
 import { ARTICLE_TYPE } from 'utils/constants'
 import { UPDATE_ARTICLE } from 'redux/types/hexo.type'
 import { useSelector, useDispatch } from 'react-redux'
+import Snackbar from '@material-ui/core/Snackbar'
 import { SWITCH_ACTIVE_TABBAR_REQUEST } from 'redux/types/app.type'
+// import { dispatchFetchArticleSage } from 'redux/sagas'
 // import logo from 'assets/test'
 // import * as logo from 'assets/logo-01.png'
 // const logo = require('assets/logo-01.png')
@@ -48,6 +51,9 @@ const AppRoot: React.FC = () => {
   const Editor = appService.getEditor()
   const [selectedPost, setSelectedPost] = React.useState<Partial<IArticle>>({})
   const theme = useTheme()
+  React.useEffect(() => {
+    hexoService.dispatchFetchArticleSage()
+  }, [])
   const articleData = useSelector((state: any) => ({
     posts: state.hexo.posts,
     drafts: state.hexo.drafts,
@@ -55,6 +61,7 @@ const AppRoot: React.FC = () => {
   }))
   const state = useSelector((state: any) => ({
     activeTabbarKey: state.app.activeTabbarKey,
+    snackbar: state.app.snackbar,
   }))
   const handleSelectedPostTypeChange = (postType: ARTICLE_TYPE) => {
     dispatch({ type: SWITCH_ACTIVE_TABBAR_REQUEST, payload: postType })
@@ -82,6 +89,14 @@ const AppRoot: React.FC = () => {
 
   return (
     <Grid container direction="column" spacing={0} className={classes.container}>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={state.snackbar.open}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={state.snackbar.message}
+      />
       <Tabbar />
       <Grid item container justify="center" spacing={0} className={classes.mainContainer}>
         <Sidebar

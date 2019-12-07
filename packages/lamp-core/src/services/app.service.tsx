@@ -1,13 +1,14 @@
 import * as React from 'react'
 import * as Hexo from 'hexo'
 import { Store } from 'redux'
-import { ADD_TOOLBAR_BUTTON_GENERATOR, SET_PROJECT_ROOT_REQUEST, SET_THEME } from 'redux/types/app.type'
+import { SET_PROJECT_ROOT_REQUEST, SET_THEME, TOGGLE_SNACKBAR } from 'redux/types/app.type'
 import { constants } from '@lamp/shared'
 import { EditorProps } from '@lamp/shared/types/editor'
 import store from 'redux/store'
 import { hexoInit } from 'hexoApi'
 import fsExtra from 'fs-extra'
 import { remote, BrowserWindow } from 'electron'
+import { sleep } from 'utils'
 
 interface TraversalContext {
   callback: (plugin: any, index: number) => any
@@ -22,13 +23,6 @@ class AppService {
 
   constructor(_store: Store) {
     this._store = store
-  }
-
-  addTab(tabConfig: any) {
-    this._store.dispatch({
-      type: ADD_TOOLBAR_BUTTON_GENERATOR,
-      payload: tabConfig,
-    })
   }
 
   private traversePlugins(context: TraversalContext) {
@@ -71,6 +65,7 @@ class AppService {
   }
 
   public async hexoDeploy() {
+    this._store.dispatch({ type: TOGGLE_SNACKBAR, payload: { open: true, message: '正在部署' } })
     const projectRoot = this._store.getState().app.projectRoot
     fsExtra.removeSync(`${projectRoot}/public/`)
     const hexo: Hexo = await hexoInit(this._store.getState().app.projectRoot, {
@@ -78,12 +73,19 @@ class AppService {
       draft: false,
     })
     await hexo.call('deploy', { _: ['g'] })
+    this._store.dispatch({ type: TOGGLE_SNACKBAR, payload: { open: true, message: '部署成功' } })
+    await sleep(1000)
+    this._store.dispatch({ type: TOGGLE_SNACKBAR, payload: { open: false, message: '' } })
   }
 
   public async showPreviewWindow() {
-    const hexo: Hexo = await hexoInit(this._store.getState().app.projectRoot, {}, true)
     if (!previewServer) {
+      const hexo: Hexo = await hexoInit(this._store.getState().app.projectRoot, {}, true)
+      this._store.dispatch({ type: TOGGLE_SNACKBAR, payload: { open: true, message: '正在启动预览服务器' } })
       previewServer = await hexo.call('server', { port: 4000 })
+      this._store.dispatch({ type: TOGGLE_SNACKBAR, payload: { open: true, message: '预览服务器启动成功' } })
+      await sleep(1000)
+      this._store.dispatch({ type: TOGGLE_SNACKBAR, payload: { open: false, message: '' } })
     }
     if (!previewWin || previewWin.isDestroyed()) {
       previewWin = new remote.BrowserWindow({ width: 800, height: 600 })

@@ -12,7 +12,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MenuList from '@material-ui/core/MenuList'
 import RefreshIcon from '@material-ui/icons/Refresh'
 import ArticleMetaEditDialog from 'components/ArticleMetaEditDialog'
-import { useDispatch } from 'react-redux'
+import hexoService from 'services/hexo.service'
 
 const useStyles = makeStyles((_theme: Theme) =>
   createStyles({
@@ -33,7 +33,6 @@ export default function SplitButton() {
   const [open, setOpen] = React.useState(false)
   const [openDialog, setOpenDialog] = React.useState(false)
   const anchorRef = React.useRef<HTMLDivElement>(null)
-  const dispatch = useDispatch()
 
   const handleAddItemClick = () => {
     handleToggleDialog(true)
@@ -56,7 +55,7 @@ export default function SplitButton() {
   }
 
   const handleRefresh = () => {
-    dispatch({ type: 'FETCH_REQUESTED', payload: { refresh: true } })
+    hexoService.dispatchFetchArticleSage({ refresh: true })
     setOpen(false)
   }
 
