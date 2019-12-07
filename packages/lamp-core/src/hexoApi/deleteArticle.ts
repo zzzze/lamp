@@ -1,5 +1,5 @@
 import * as Hexo from 'hexo'
-import electron from 'electron'
+import * as electron from 'electron'
 import withWatcher from './withWatcher'
 
 function deleteArticle(_: Hexo, fullSource: string) {
