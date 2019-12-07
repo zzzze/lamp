@@ -3,9 +3,7 @@ export function urlSlash(): '/' | '\\' {
 }
 
 export function makePath(pathname: string): string {
-  return process.platform === 'win32'
-    ? pathname.replace(/\//g, '\\\\')
-    : pathname.replace(/\\\\/g, '/')
+  return process.platform === 'win32' ? pathname.replace(/\//g, '\\\\') : pathname.replace(/\\\\/g, '/')
 }
 
 export function normalizePath(pathname: string): string {

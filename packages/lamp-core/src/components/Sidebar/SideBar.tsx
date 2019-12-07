@@ -8,9 +8,7 @@ import BookmarkIcon from '@material-ui/icons/Bookmark'
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
 import LinearProgress from '@material-ui/core/LinearProgress'
 import PostList from 'components/PostList'
-import {
-  useSelector,
-} from 'react-redux'
+import { useSelector } from 'react-redux'
 import { IArticle } from 'hexoApi/types'
 import { ARTICLE_TYPE } from 'utils/constants'
 import SidebarActionButtons from 'components/SidebarActionButtons'

@@ -1,15 +1,13 @@
 import React from 'react'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import { makeStyles, createStyles, Theme, withStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import InputBase from '@material-ui/core/InputBase'
 import NotchedOutline from './NotchedOutline'
-import { withStyles } from '@material-ui/core/styles'
 
 export const styles = theme => {
   const borderColor = theme.palette.type === 'light' ? 'rgba(0, 0, 0, 0.23)' : 'rgba(255, 255, 255, 0.23)'
 
   return {
-    /* Styles applied to the root element. */
     root: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
@@ -133,16 +131,17 @@ const OutlinedInput = React.forwardRef(function OutlinedInput(props: any, ref) {
     ...other
   } = props as any
   const [suffixState, setSuffixState] = React.useState({})
+  const renderSuffix = (state: any) => {
+    return React.useMemo(() => {
+      setSuffixState(state)
+    }, [JSON.stringify(state)])
+  }
 
   return (
     <>
       <InputBase
         key="input"
-        renderSuffix={state =>
-          React.useMemo(() => {
-            setSuffixState(state)
-          }, [JSON.stringify(state)])
-        }
+        renderSuffix={renderSuffix}
         classes={{
           ...classes,
           root: clsx(classes.root, classes.underline),

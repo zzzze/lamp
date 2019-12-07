@@ -52,7 +52,7 @@ const TagInput: React.FC<Partial<TagInputProps>> = ({
   }, [])
 
   const handleDeleteTag = (index: number, _event: React.MouseEvent<HTMLElement>) => {
-    let newTags = value.slice()
+    const newTags = value.slice()
     newTags.splice(index, 1)
     onChange && onChange(newTags)
   }
@@ -111,7 +111,7 @@ const TagInput: React.FC<Partial<TagInputProps>> = ({
             </IconButton>
           </InputAdornment>
         }
-        renderDataPreview={!!value.length ? renderDataPreview : null}
+        renderDataPreview={value.length ? renderDataPreview : null}
         {...others}
       />
       {helperText && (

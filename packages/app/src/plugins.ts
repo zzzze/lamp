@@ -13,25 +13,17 @@ function normalizePath(path: string): string {
   return path
 }
 
-;(global as any).module.paths.map((x: string) =>
-  (nodeModule as any).globalPaths.push(normalizePath(x))
-)
+;(global as any).module.paths.map((x: string) => (nodeModule as any).globalPaths.push(normalizePath(x)))
 
 if (process.env.LAMP_DEV) {
-  ;(nodeModule as any).globalPaths.unshift(
-    path.dirname(require('electron').remote.app.getAppPath())
-  )
+  ;(nodeModule as any).globalPaths.unshift(path.dirname(require('electron').remote.app.getAppPath()))
 }
 
 const builtinPluginsPath = process.env.LAMP_DEV
   ? path.dirname(require('electron').remote.app.getAppPath())
   : path.join((process as any).resourcesPath, 'builtin-plugins')
 
-const userPluginsPath = path.join(
-  require('electron').remote.app.getPath('appData'),
-  'lamp',
-  'plugins'
-)
+const userPluginsPath = path.join(require('electron').remote.app.getPath('appData'), 'lamp', 'plugins')
 
 if (!fs.existsSync(userPluginsPath)) {
   fs.mkdir(userPluginsPath)
@@ -39,15 +31,11 @@ if (!fs.existsSync(userPluginsPath)) {
 
 Object.assign(window, { builtinPluginsPath, userPluginsPath })
 ;(nodeModule as any).globalPaths.unshift(builtinPluginsPath)
-;(nodeModule as any).globalPaths.unshift(
-  path.join(userPluginsPath, 'node_modules')
-)
+;(nodeModule as any).globalPaths.unshift(path.join(userPluginsPath, 'node_modules'))
 ;(nodeModule as any).globalPaths.unshift(path.join((process as any).resourcesPath, 'app'))
 ;(nodeModule as any).globalPaths.unshift(path.join((process as any).resourcesPath, 'app.asar'))
 if (process.env.LAMP_PLUGINS) {
-  process.env.LAMP_PLUGINS.split(':').map(x =>
-    (nodeModule as any).globalPaths.push(normalizePath(x))
-  )
+  process.env.LAMP_PLUGINS.split(':').map(x => (nodeModule as any).globalPaths.push(normalizePath(x)))
 }
 console.log((nodeModule as any).globalPaths)
 
@@ -142,16 +130,8 @@ export async function findPlugins(): Promise<PluginInfo[]> {
     }
 
     try {
-      const info = JSON.parse(
-        await fs.readFile(infoPath, { encoding: 'utf-8' })
-      )
-      if (
-        !info.keywords ||
-        !(
-          info.keywords.includes('lamp-plugin') ||
-          info.keywords.includes('lamp-builtin-plugin')
-        )
-      ) {
+      const info = JSON.parse(await fs.readFile(infoPath, { encoding: 'utf-8' }))
+      if (!info.keywords || !(info.keywords.includes('lamp-plugin') || info.keywords.includes('lamp-builtin-plugin'))) {
         continue
       }
       let author = info.author
@@ -176,17 +156,12 @@ export async function findPlugins(): Promise<PluginInfo[]> {
   return foundPlugins
 }
 
-export async function loadPlugins(
-  foundPlugins: PluginInfo[],
-  progress: ProgressCallback
-): Promise<any[]> {
+export async function loadPlugins(foundPlugins: PluginInfo[], progress: ProgressCallback): Promise<any[]> {
   const plugins: any[] = []
   progress(0, 1)
   let index = 0
   for (const foundPlugin of foundPlugins) {
-    console.info(
-      `Loading ${foundPlugin.name}: ${nodeRequire.resolve(foundPlugin.path)}`
-    )
+    console.info(`Loading ${foundPlugin.name}: ${nodeRequire.resolve(foundPlugin.path)}`)
     progress(index, foundPlugins.length)
     try {
       const label = 'Loading ' + foundPlugin.name

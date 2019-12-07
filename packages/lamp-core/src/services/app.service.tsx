@@ -1,14 +1,19 @@
 import * as React from 'react'
 import * as Hexo from 'hexo'
 import { Store } from 'redux'
-import { SET_PROJECT_ROOT_REQUEST, SET_THEME, TOGGLE_SNACKBAR } from 'redux/types/app.type'
+import {
+  SET_PROJECT_ROOT_REQUEST,
+  SET_THEME,
+  TOGGLE_SNACKBAR,
+  SWITCH_ACTIVE_TABBAR_REQUEST,
+} from 'redux/types/app.type'
 import { constants } from '@lamp/shared'
 import { EditorProps } from '@lamp/shared/types/editor'
 import store from 'redux/store'
 import { hexoInit } from 'hexoApi'
 import fsExtra from 'fs-extra'
 import { remote, BrowserWindow } from 'electron'
-import { SWITCH_ACTIVE_TABBAR_REQUEST } from 'redux/types/app.type'
+
 import { sleep } from 'utils'
 
 interface TraversalContext {

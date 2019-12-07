@@ -1,5 +1,5 @@
 import * as Hexo from 'hexo'
-import {path as pathUtil} from '../utils'
+import { path as pathUtil } from '../utils'
 import moveArticle from './moveArticle'
 
 function withdrawArticle(_: Hexo, fullSource: string) {

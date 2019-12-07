@@ -42,7 +42,7 @@ export const styles = theme => {
  * @ignore - internal component.
  */
 const NotchedOutline = React.forwardRef(function NotchedOutline(props: any, ref) {
-  const { children, classes, className, labelWidth: labelWidthProp, notched, style, ...other } = props as any
+  const { classes, className, labelWidth: labelWidthProp, notched, style, ...other } = props as any
   const theme = useTheme()
   const align = theme.direction === 'rtl' ? 'right' : 'left'
   const labelWidth = labelWidthProp > 0 ? labelWidthProp * 0.75 + 8 : 0

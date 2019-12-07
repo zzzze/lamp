@@ -4,10 +4,7 @@ import moveArticle from './moveArticle'
 function publishArticle(_, fullSource: string) {
   if (pathUtil.isPostPath(fullSource)) return
   const slash = pathUtil.urlSlash()
-  const dist = fullSource.replace(
-    `${slash}_drafts${slash}`,
-    `${slash}_posts${slash}`
-  )
+  const dist = fullSource.replace(`${slash}_drafts${slash}`, `${slash}_posts${slash}`)
   return moveArticle(_, dist, fullSource)
 }
 

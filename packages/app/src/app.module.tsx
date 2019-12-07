@@ -9,9 +9,7 @@ export function getRootModule(plugins: any[]) {
   }, [])
 
   if (bootstraps.length === 0) {
-    throw new Error(
-      'Did not find any bootstrap components. Are there any plugins installed?'
-    )
+    throw new Error('Did not find any bootstrap components. Are there any plugins installed?')
   }
   const rootModule = {
     bootstrap: (context: AppTypes.BootstrapContext) => {

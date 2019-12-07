@@ -4,6 +4,7 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "webpack --progress --color",
     "watch": "cross-env LAMP_DEV=1 webpack --progress --color --watch",
     "start": "cross-env LAMP_DEV=1 electron packages/app --debug",
     "prod": "cross-env LAMP_DEV=1 electron packages/app",
