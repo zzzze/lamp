@@ -10,6 +10,8 @@ import {
   withdrawArticle as hexoWithdrawArticle,
   createArticle as hexoCreateArticle,
   updateArticle as hexoUpdateArticle,
+  deleteArticle as hexoDeleteArticle,
+  moveArticle as hexoMoveArticle,
 } from 'hexoApi'
 
 let hexo = null
@@ -28,46 +30,73 @@ function* hexoInitTask() {
   }
 }
 
-function* getArticleDataTask(action?: () => void) {
-  yield put({ type: FETCHING_ARTICLE, payload: true })
-  yield hexoInitTask()
-  const articleData = !action ? yield getArticleData(hexo as any) : yield action()
-  yield put({ type: FETCH_ARTICLE_DATA, payload: articleData })
-  yield put({ type: FETCHING_ARTICLE, payload: false })
+function withGetArticleDataFramework(operation?: (hexo: any, ...args: any) => void) {
+  return function*(...args: any[]) {
+    yield put({ type: FETCHING_ARTICLE, payload: true })
+    yield hexoInitTask()
+    const articleData = !operation ? yield getArticleData(hexo as any) : yield operation(hexo, ...args)
+    yield put({ type: FETCH_ARTICLE_DATA, payload: articleData })
+    yield put({ type: FETCHING_ARTICLE, payload: false })
+  }
+}
+
+function withPrompt(action: any, prompt: { before: string; after: string }, delayCount: number = 1000) {
+  return function*(...args: any[]) {
+    yield put({ type: TOGGLE_SNACKBAR, payload: { open: true, message: prompt.before } })
+    yield action(...args)
+    yield put({ type: TOGGLE_SNACKBAR, payload: { open: true, message: prompt.after } })
+    yield delay(delayCount)
+    yield put({ type: TOGGLE_SNACKBAR, payload: { open: false, message: '' } })
+  }
 }
 
 export function* fetchArticleData(action: FetchArticleDataActionType) {
   if (action.payload && action.payload.refresh) {
     hexo = null
   }
-  yield getArticleDataTask()
+  const task = withGetArticleDataFramework()
+  yield task()
 }
 
 export function* publishArticle(action: any) {
-  yield getArticleDataTask(function*() {
-    return yield withGetArticleData(hexoPublishArticle)(hexo as any, action.payload)
-  })
+  const task = withGetArticleDataFramework(withGetArticleData(hexoPublishArticle))
+  yield task(action.payload)
 }
 
 export function* withDrawArticle(action: any) {
-  yield getArticleDataTask(function*() {
-    return yield withGetArticleData(hexoWithdrawArticle)(hexo as any, action.payload)
-  })
+  const task = withGetArticleDataFramework(withGetArticleData(hexoWithdrawArticle))
+  yield task(action.payload)
 }
 
 export function* createArticle(action: any) {
-  yield getArticleDataTask(function*() {
-    return yield withGetArticleData(hexoCreateArticle)(hexo as any, action.payload)
+  const task = withPrompt(withGetArticleDataFramework(withGetArticleData(hexoCreateArticle)), {
+    before: '正在创建文章',
+    after: '文章创建成功',
   })
+  yield task(action.payload)
   yield put({ type: SWITCH_ACTIVE_TABBAR_KEY, payload: ARTICLE_TYPE.DRAFT })
 }
 
 export function* updateArticle(action: any) {
-  yield put({ type: TOGGLE_SNACKBAR, payload: { open: true, message: '正在更新文章' } })
-  yield getArticleDataTask(function*() {
-    return yield withGetArticleData(hexoUpdateArticle)(hexo as any, action.payload)
+  const task = withPrompt(withGetArticleDataFramework(withGetArticleData(hexoUpdateArticle)), {
+    before: '正在更新文章',
+    after: '文章更新成功',
   })
-  yield put({ type: TOGGLE_SNACKBAR, payload: { open: true, message: '文章更新成功' } })
-  yield delay(1000)
-  yield put({ type: TOGGLE_SNACKBAR, payload: { open: false, message: '' } })
+  if (action.payload.slug !== action.payload.oldSlug) {
+    yield hexoMoveArticle(
+      hexo as any,
+      action.payload.full_source.replace(`${action.payload.oldSlug}.md`, `${action.payload.slug}.md`),
+      action.payload.full_source
+    )
+  }
+  delete action.payload.oldSlug
+  yield task(action.payload)
+}
+
+export function* deleteArticle(action: any) {
+  const task = withPrompt(withGetArticleDataFramework(withGetArticleData(hexoDeleteArticle)), {
+    before: '正在删除文章',
+    after: '文章删除成功',
+  })
+  yield task(action.payload)
 }

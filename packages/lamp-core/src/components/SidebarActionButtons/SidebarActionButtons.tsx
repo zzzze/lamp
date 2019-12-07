@@ -55,7 +55,7 @@ export default function SplitButton() {
   }
 
   const handleRefresh = () => {
-    hexoService.dispatchFetchArticleSage({ refresh: true })
+    hexoService.fetchArticle({ refresh: true })
     setOpen(false)
   }
 

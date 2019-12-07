@@ -16,8 +16,7 @@ import Typography from '@material-ui/core/Typography'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { IArticle } from 'hexoApi/types'
 import { ARTICLE_TYPE } from 'utils/constants'
-import { useDispatch } from 'react-redux'
-import { PUBLISH_ARTICLE_REQUEST, WITHDRAW_ARTICLE } from 'redux/types/hexo.type'
+import hexoService from 'services/hexo.service'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,7 +77,7 @@ interface PostListItemProps {
   selectedId: string | null
   onSelectPost: (article: IArticle) => void
   selectedPostType: ARTICLE_TYPE
-  onOpenEditMetaDialog: (title: string, slug: string, tags: string[]) => void
+  onOpenEditMetaDialog: (data: { title: string; slug: string; tags: string[]; _content: string }) => void
 }
 
 const PostListItem: React.FC<PostListItemProps> = ({
@@ -88,7 +87,6 @@ const PostListItem: React.FC<PostListItemProps> = ({
   selectedPostType,
   onOpenEditMetaDialog,
 }) => {
-  const dispatch = useDispatch()
   const classes = useStyles()
   const actionClasses = useActionStyles()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -101,15 +99,20 @@ const PostListItem: React.FC<PostListItemProps> = ({
     setAnchorEl(null)
   }
   const handlePublish = () => {
-    dispatch({ type: PUBLISH_ARTICLE_REQUEST, payload: data.full_source })
+    hexoService.publishArticle(data.full_source)
   }
   const handleWithdraw = () => {
-    dispatch({ type: WITHDRAW_ARTICLE, payload: data.full_source })
+    hexoService.withdrawArticle(data.full_source)
+  }
+  const handleDelete = () => {
+    hexoService.deleteArticle(data.full_source)
   }
   const handleEditMeta = () => {
     const tags = (data as any).tags.data || (data as any).tags
+    onOpenEditMetaDialog({ ...data, tags })
+  }
+  const handleClickMenu = () => {
     setAnchorEl(null)
-    onOpenEditMetaDialog(data.title, data.slug, tags)
   }
 
   const renderEditMenuItem = () => (
@@ -135,6 +138,7 @@ const PostListItem: React.FC<PostListItemProps> = ({
             keepMounted
             open={open}
             onClose={handleClose}
+            onClick={handleClickMenu}
             PaperProps={{
               style: {
                 width: 200,
@@ -158,7 +162,7 @@ const PostListItem: React.FC<PostListItemProps> = ({
                 <Typography variant="inherit">发布</Typography>
               </MenuItem>,
               renderEditMenuItem(),
-              <MenuItem key="delete">
+              <MenuItem key="delete" onClick={handleDelete}>
                 <ListItemIcon>
                   <DeleteIcon fontSize="small" />
                 </ListItemIcon>

@@ -6,45 +6,27 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { useDispatch } from 'react-redux'
-import { CREATE_ARTICLE, UPDATE_ARTICLE } from 'redux/types/hexo.type'
 import TagInput from 'components/TagInput'
+import hexoService from 'services/hexo.service'
 
 interface ArticleCreationDialogProps {
   open: boolean
   handleToggle: (open: boolean) => void
+  data?: any
   edit?: boolean
-  title?: string
-  slug?: string
-  tags?: string[]
 }
 
 const ArticleMetaEditDialog: React.FC<ArticleCreationDialogProps> = ({
   open,
   handleToggle,
   edit = false,
-  title = '',
-  slug = '',
-  tags = [],
+  data = {},
 }) => {
-  const [_title, setTitle] = React.useState(title)
-  const [_slug, setSlug] = React.useState(slug)
-  const [_tags, setTags] = React.useState(tags)
+  const [_title, setTitle] = React.useState(data.title)
+  const [_slug, setSlug] = React.useState(data.slug)
+  const [_tags, setTags] = React.useState(data.tags)
   const [titleError, setTitleError] = React.useState(false)
   const [slugError, setSlugError] = React.useState(false)
-  const dispatch = useDispatch()
-
-  React.useEffect(() => {
-    setTitle(title)
-  }, [title, open])
-
-  React.useEffect(() => {
-    setSlug(slug)
-  }, [slug, open])
-
-  React.useEffect(() => {
-    setTags(tags)
-  }, [Array.isArray(tags) ? tags.join(',') : '', open])
 
   const handleClose = () => {
     setTitle('')
@@ -71,13 +53,13 @@ const ArticleMetaEditDialog: React.FC<ArticleCreationDialogProps> = ({
   }
   const handleCreate = () => {
     if (validateTitle() && validateSlug()) {
-      dispatch({ type: CREATE_ARTICLE, payload: { title: _title, slug: _slug } })
+      hexoService.createArticle({ title: _title, slug: _slug })
       handleClose()
     }
   }
   const handleUpdate = () => {
     if (validateTitle() && validateSlug()) {
-      dispatch({ type: UPDATE_ARTICLE, payload: { title: _title, slug: _slug, tags: _tags } })
+      hexoService.updateArticle({ ...data, title: _title, slug: _slug, tags: _tags, oldSlug: data.slug })
       handleClose()
     }
   }

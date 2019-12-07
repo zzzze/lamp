@@ -7,14 +7,8 @@ import Tabbar from 'components/Tabbar'
 import Sidebar from 'components/Sidebar'
 import { IArticle } from 'hexoApi/types'
 import { ARTICLE_TYPE } from 'utils/constants'
-import { UPDATE_ARTICLE } from 'redux/types/hexo.type'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Snackbar from '@material-ui/core/Snackbar'
-import { SWITCH_ACTIVE_TABBAR_REQUEST } from 'redux/types/app.type'
-// import { dispatchFetchArticleSage } from 'redux/sagas'
-// import logo from 'assets/test'
-// import * as logo from 'assets/logo-01.png'
-// const logo = require('assets/logo-01.png')
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,13 +40,12 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const AppRoot: React.FC = () => {
-  const dispatch = useDispatch()
   const classes = useStyles()
   const Editor = appService.getEditor()
   const [selectedPost, setSelectedPost] = React.useState<Partial<IArticle>>({})
   const theme = useTheme()
   React.useEffect(() => {
-    hexoService.dispatchFetchArticleSage()
+    hexoService.fetchArticle()
   }, [])
   const articleData = useSelector((state: any) => ({
     posts: state.hexo.posts,
@@ -64,7 +57,7 @@ const AppRoot: React.FC = () => {
     snackbar: state.app.snackbar,
   }))
   const handleSelectedPostTypeChange = (postType: ARTICLE_TYPE) => {
-    dispatch({ type: SWITCH_ACTIVE_TABBAR_REQUEST, payload: postType })
+    appService.changeActivePostType(postType)
   }
   const handleSelectPost = (article: IArticle) => {
     setSelectedPost(article)
@@ -84,7 +77,7 @@ const AppRoot: React.FC = () => {
       ...selectedPost,
       _content: content,
     }
-    dispatch({ type: UPDATE_ARTICLE, payload: postData })
+    hexoService.updateArticle(postData)
   }
 
   return (

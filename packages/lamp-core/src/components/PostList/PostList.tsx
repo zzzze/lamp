@@ -17,17 +17,13 @@ interface PostListProps {
 
 const PostList: React.FC<PostListProps> = ({ articleData, onSelectPost, selectedId, selectedPostType }) => {
   const [openDialog, setOpenDialog] = React.useState(false)
-  const [selectedTitle, setSelectedTitle] = React.useState('')
-  const [selectedSlug, setSelectedSlug] = React.useState('')
-  const [selectedTags, setSelectedTags] = React.useState<string[]>([])
+  const [selectedArticleData, setSelectedArticleData] = React.useState<{}>({})
   const handleToggleDialog = (open: boolean) => {
     setOpenDialog(open)
   }
-  const handleOpenEditMetaDialog = (title: string, slug: string, tags: string[]) => {
-    setSelectedTitle(title)
-    setSelectedSlug(slug)
-    setSelectedTags(tags)
+  const handleOpenEditMetaDialog = (data?: { title: string; slug: string; tags: string[]; _content: string }) => {
     setOpenDialog(true)
+    setSelectedArticleData(data || {})
   }
   return (
     <List component="nav" aria-label="secondary mailbox folders">
@@ -43,10 +39,9 @@ const PostList: React.FC<PostListProps> = ({ articleData, onSelectPost, selected
       ))}
       <ArticleMetaEditDialog
         edit
-        title={selectedTitle}
-        slug={selectedSlug}
+        data={selectedArticleData}
+        key={(selectedArticleData as any).slug}
         open={openDialog}
-        tags={selectedTags}
         handleToggle={handleToggleDialog}
       />
     </List>

@@ -15,9 +15,6 @@ const getTheme = (themeType: string) => {
 const defaultState = {
   activeTabbarKey: ARTICLE_TYPE.POST,
   projectRoot: electronStore.get(StoreKey.PROJECT_ROOT) || '',
-  generators: {
-    toolbarButton: [],
-  },
   theme: getTheme(electronStore.get(StoreKey.THEME) || 'light'),
   snackbar: {
     open: false,

@@ -8,6 +8,7 @@ import store from 'redux/store'
 import { hexoInit } from 'hexoApi'
 import fsExtra from 'fs-extra'
 import { remote, BrowserWindow } from 'electron'
+import { SWITCH_ACTIVE_TABBAR_REQUEST } from 'redux/types/app.type'
 import { sleep } from 'utils'
 
 interface TraversalContext {
@@ -23,6 +24,10 @@ class AppService {
 
   constructor(_store: Store) {
     this._store = store
+  }
+
+  get dispatch() {
+    return this._store.dispatch
   }
 
   private traversePlugins(context: TraversalContext) {
@@ -111,6 +116,10 @@ class AppService {
 
   public getTheme() {
     return this._store.getState().app.theme
+  }
+
+  public changeActivePostType(postType) {
+    this.dispatch({ type: SWITCH_ACTIVE_TABBAR_REQUEST, payload: postType })
   }
 }
 
