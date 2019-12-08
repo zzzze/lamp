@@ -95,9 +95,6 @@
         "NSRequiresAquaSystemAppearance": false
       }
     },
-    "pkg": {
-      "artifactName": "lamp-${version}-macos.pkg"
-    },
     "linux": {
       "category": "Utilities",
       "icon": "./build/icons",
