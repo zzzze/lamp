@@ -1,5 +1,5 @@
 {
-  "version": "0.0.4",
+  "version": "0.0.5-2",
   "private": "true",
   "workspaces": [
     "packages/*"
@@ -94,6 +94,9 @@
       "extendInfo": {
         "NSRequiresAquaSystemAppearance": false
       }
+    },
+    "pkg": {
+      "artifactName": "lamp-${version}-macos.pkg"
     },
     "linux": {
       "category": "Utilities",
