@@ -13,7 +13,6 @@ builder({
     extraMetadata: {
       name: 'Lamp',
       main: './dist/main.js',
-      version: vars.version,
     },
   },
   publish: isTag ? 'always' : 'onTag',
