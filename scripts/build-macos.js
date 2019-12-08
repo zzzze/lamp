@@ -15,7 +15,8 @@ builder({
       main: './dist/main.js',
     },
   },
-  publish: isTag ? 'always' : 'onTag',
+  publish: 'always',
+  // publish: isTag ? 'always' : 'onTag',
 }).catch(err => {
   console.log(err)
   process.exit(1)
