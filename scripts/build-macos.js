@@ -8,7 +8,7 @@ const isTag = (process.env.GITHUB_REF || '').startsWith('refs/tags/')
 
 builder({
   dir: true,
-  mac: ['dmg'],
+  mac: ['dmg', 'pkg'],
   config: {
     extraMetadata: {
       name: 'Lamp',
