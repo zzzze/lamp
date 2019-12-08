@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import { constants } from '@lamp/shared'
 import SettingPage from 'components/Settings'
 import { ThemeProvider } from '@material-ui/core/styles'
+import electron from 'electron'
 
 const settingElement = document.createElement('div')
 settingElement.id = 'setting-page'
@@ -27,11 +28,16 @@ const handleClose = () => {
 
 const providers = {
   [constants.Provider.MENU_ITEM_RENDERER]: ({ appService, classes, afterClick }) => {
+    const handleRenderSettingPage = () => {
+      renderSettingPage(appService)
+    }
+    electron.ipcRenderer.on('host:preferences-menu', () => handleRenderSettingPage())
+
     return (
       <MenuItem
         key="settings"
         onClick={() => {
-          renderSettingPage(appService)
+          handleRenderSettingPage()
           afterClick && afterClick()
         }}
       >

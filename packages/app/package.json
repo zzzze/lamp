@@ -1,6 +1,5 @@
 {
-  "name": "@lamp/app",
-  "version": "0.0.5-4",
+  "name": "Lamp",
   "description": "",
   "main": "dist/main.js",
   "scripts": {

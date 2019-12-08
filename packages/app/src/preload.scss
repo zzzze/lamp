@@ -62,28 +62,3 @@ loading {
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
-
-
-
-.terminus-logo {
-  width: 160px;
-  height: 160px;
-  // background: url('../assets/logo.svg');
-  background-repeat: none;
-  background-size: contain;
-  margin: auto;
-}
-
-
-.terminus-title {
-  color: #a1c5e4;
-  font-family: 'Source Sans Pro';
-  text-align: center;
-  font-weight: normal;
-  font-size: 42px;
-  margin: 0;
-
-  sup {
-      color: #842fe0;
-  }
-}

@@ -110,7 +110,7 @@ export class Application {
       {
         label: 'Application',
         submenu: [
-          { role: 'about', label: 'About Terminus' },
+          { role: 'about', label: 'About Lamp' },
           { type: 'separator' },
           {
             label: 'Preferences',
@@ -119,7 +119,7 @@ export class Application {
               if (!this.hasWindows()) {
                 await this.newWindow()
               }
-              this.windows[0].send('host:preferences-menu')
+              this.send('host:preferences-menu')
             },
           },
           { type: 'separator' },
@@ -176,7 +176,7 @@ export class Application {
           {
             label: 'Website',
             click() {
-              shell.openExternal('https://eugeny.github.io/terminus')
+              shell.openExternal('https://github.com/zzzze/lamp')
             },
           },
         ],
