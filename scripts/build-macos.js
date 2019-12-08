@@ -8,7 +8,7 @@ const isTag = (process.env.GITHUB_REF || '').startsWith('refs/tags/')
 
 builder({
   dir: true,
-  mac: ['dmg', 'pkg', 'zip'],
+  mac: ['dmg'],
   config: {
     extraMetadata: {
       name: 'Lamp',
@@ -16,7 +16,7 @@ builder({
     },
   },
   publish: 'always',
-  // publish: isTag ? 'always' : 'onTag',
+  publish: isTag ? 'always' : 'onTag',
 }).catch(err => {
   console.log(err)
   process.exit(1)
